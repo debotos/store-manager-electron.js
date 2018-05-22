@@ -1,0 +1,20 @@
+.textarea {
+  border: none;
+  height: 50rem;
+  width: 100%;
+  margin-top: 10px;
+  font-family: 1.8rem;
+  font-weight: 400;
+  padding: 1.2rem;
+  color: black;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.content {
+  white-space: pre-wrap;
+}
