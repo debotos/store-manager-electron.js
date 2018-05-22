@@ -1,11 +1,11 @@
-import database from "../../secrets/firebase";
-import { UPDATE_STORE_INFO, SET_STORE_INFO } from "../constants";
+import db from '../../secrets/neDB';
+import { UPDATE_STORE_INFO, SET_STORE_INFO } from '../constants';
+import { reject } from 'bluebird-lst';
 
-const updateStoreInfo = (id, data) => {
+const updateStoreInfo = data => {
   return {
     type: UPDATE_STORE_INFO,
     info: {
-      id,
       ...data
     }
   };
@@ -14,80 +14,84 @@ const updateStoreInfo = (id, data) => {
 export const startUpdateStoreInfo = storeInfo => {
   // console.log("startUpdateStoreInfo got a call");
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    // let currentValue;
-    let currentValueId;
-    let allValue = [];
-    database
-      .ref(`users/${uid}/store-info`)
-      .once("value")
-      .then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-          // currentValue = childSnapshot.val().info;
-          // console.log("current INFO. ", currentValue);
-          currentValueId = childSnapshot.key;
-          // console.log("current info ID ", currentValueId);
-          allValue.push(childSnapshot.val().info);
-        });
-      })
-      .then(() => {
-        let data;
-        if (allValue.length > 0) {
-          data = {
-            info: storeInfo
-          };
-          return database
-            .ref(`users/${uid}/store-info/${currentValueId}`)
-            .update(data)
-            .then(() => {
-              dispatch(updateStoreInfo(currentValueId, storeInfo));
-            });
+    var doc = { ...storeInfo };
+    var docWithID = {};
+
+    return new Promise(function(resolve, reject) {
+      db['info'].count({}, function(err, count) {
+        if (err) {
+          reject(err);
         } else {
-          console.log("Calling Push for StoreInfo");
-          data = {
-            info: storeInfo
-          };
-          return database
-            .ref(`users/${uid}/store-info`)
-            .push(data)
-            .then(ref => {
-              dispatch(updateStoreInfo(ref.key, storeInfo));
-            });
+          resolve(count);
         }
       });
+    }).then(count => {
+      console.log('Got the Doc Amount => ', count);
+      if (count === 0) {
+        return new Promise(function(resolve, reject) {
+          db['info'].insert(doc, function(err, newDoc) {
+            if (err) {
+              reject(err);
+            } else {
+              console.log('Info Added!');
+              resolve(newDoc);
+            }
+          });
+        }).then(newDoc => {
+          docWithID = { ...newDoc };
+          dispatch(updateStoreInfo(docWithID));
+        });
+      } else {
+        return new Promise(function(resolve, reject) {
+          db['info'].remove({}, { multi: true }, function(err, numRemoved) {
+            if (err) {
+              reject(err);
+            } else {
+              console.log('Info Deleted!');
+              resolve(numRemoved);
+            }
+          });
+        }).then(numRemoved => {
+          console.log('Existing Info Deleted. Update is processing...');
+          return new Promise(function(resolve, reject) {
+            db['info'].insert(doc, function(err, newDoc) {
+              if (err) {
+                reject(err);
+              } else {
+                console.log('Info Updated!');
+                resolve(newDoc);
+              }
+            });
+          }).then(newDoc => {
+            docWithID = { ...newDoc };
+            dispatch(updateStoreInfo(docWithID));
+          });
+        });
+      }
+    });
   };
 };
 
-export const setStoreInfo = data => ({
-  type: SET_STORE_INFO,
-  data
-});
+export const setStoreInfo = data => {
+  console.log(data);
+  return {
+    type: SET_STORE_INFO,
+    data
+  };
+};
 
 export const startSetStoreInfo = () => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/store-info`)
-      .once("value")
-      .then(snapshot => {
-        let storeInfo = {
-          id: "",
-          name: "",
-          number1: "",
-          number2: "",
-          number3: "",
-          address: "",
-          password: ""
-        };
-
-        snapshot.forEach(childSnapshot => {
-          storeInfo = {
-            id: childSnapshot.key,
-            ...childSnapshot.val().info
-          };
-        });
-
-        dispatch(setStoreInfo(storeInfo));
+    return new Promise(function(resolve, reject) {
+      db['info'].find({}, function(err, docs) {
+        if (err) {
+          reject(err);
+        } else {
+          console.log(docs);
+          dispatch(setStoreInfo(docs[0]));
+          resolve(docs[0]);
+        }
       });
+    });
   };
 };

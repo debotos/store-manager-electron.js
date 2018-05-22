@@ -91,28 +91,16 @@ class Home extends Component {
   };
   constructor(props) {
     super(props);
-    // this.state = {
-    //   toggle: false,
-    //   snackBar: false,
-    //   snackBarMessage: '',
-    //   name: this.props.storeInfo.name,
-    //   number1: this.props.storeInfo.number1,
-    //   number2: this.props.storeInfo.number2,
-    //   number3: this.props.storeInfo.number3,
-    //   address: this.props.storeInfo.address,
-    //   password: this.props.storeInfo.password
-    // };
-
     this.state = {
       toggle: false,
       snackBar: false,
       snackBarMessage: '',
-      name: '',
-      number1: 0,
-      number2: 0,
-      number3: 0,
-      address: '',
-      password: ''
+      name: this.props.storeInfo.name,
+      number1: this.props.storeInfo.number1,
+      number2: this.props.storeInfo.number2,
+      number3: this.props.storeInfo.number3,
+      address: this.props.storeInfo.address,
+      password: this.props.storeInfo.password
     };
   }
   handleUpdateStoreInfo = () => {

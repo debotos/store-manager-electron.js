@@ -333,6 +333,7 @@ class Form extends Component {
           <textarea
             autoFocus
             style={{
+              padding: '10px',
               height: '150px',
               width: '100%',
               marginTop: 5,
