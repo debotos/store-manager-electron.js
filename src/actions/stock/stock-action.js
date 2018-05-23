@@ -3,8 +3,9 @@ import {
   REMOVE_ITEM_FROM_STOCK,
   ADD_ITEM_TO_STOCK,
   UPDATE_STOCK_ITEM
-} from "../constants";
-import database from "../../secrets/firebase";
+} from '../constants';
+import db from '../../secrets/neDB';
+import database from '../../secrets/firebase';
 
 // CURD Actions of Database is here
 
@@ -16,14 +17,19 @@ export const addItemToStock = data => ({
 });
 
 export const startAddItemToStock = data => {
+  let doc = { ...data };
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/stock/${data.productCategoryToSell}`)
-      .push(data)
-      .then(ref => {
-        dispatch(addItemToStock({ id: ref.key, ...data }));
+    return new Promise(function(resolve, reject) {
+      db.stock[data.productCategoryToSell].insert(doc, function(err, newDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newDoc);
+        }
       });
+    }).then(newDoc => {
+      dispatch(addItemToStock({ id: newDoc._id, ...newDoc }));
+    });
   };
 };
 
@@ -37,16 +43,32 @@ export const removeItemToStock = (productCategoryToSell, id) => ({
 
 export const startRemoveItemToStock = (productCategoryToSell, id) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/stock/${productCategoryToSell}/${id}`)
-      .remove()
-      .then(() => {
-        dispatch(removeItemToStock(productCategoryToSell, id));
+    return new Promise(function(resolve, reject) {
+      db.stock[productCategoryToSell].remove({ _id: id }, {}, function(
+        err,
+        numRemoved
+      ) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(numRemoved);
+        }
       });
+    }).then(numRemoved => {
+      dispatch(removeItemToStock(productCategoryToSell, id));
+    });
   };
 };
 
+// const removeId = obj => {
+//   console.log('Incomming Stock Object => ', obj);
+//   let newObj = {
+//     productCode: obj['productCode'],
+//     productName: obj['productName']
+//   };
+//   console.log('Return back Stock Object for Query => ', newObj);
+//   return newObj;
+// };
 // Update
 export const updateStockItem = (id, data) => ({
   type: UPDATE_STOCK_ITEM,
@@ -56,13 +78,37 @@ export const updateStockItem = (id, data) => ({
 
 export const startUpdateStockItem = (id, data) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/stock/${data.productCategoryToSell}/${id}`)
-      .update(data)
-      .then(() => {
-        dispatch(updateStockItem(id, { id, ...data }));
+    return new Promise(function(resolve, reject) {
+      db.stock[data.productCategoryToSell].findOne({ _id: id }, function(
+        err,
+        doc
+      ) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(doc);
+        }
       });
+    }).then(doc => {
+      console.log('You are trying to update this doc => ', doc);
+
+      return new Promise(function(resolve, reject) {
+        db.stock[data.productCategoryToSell].update(doc, data, {}, function(
+          err,
+          numReplaced
+        ) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(numReplaced);
+          }
+        });
+      }).then(numReplaced => {
+        console.log('Stock update no => ', numReplaced);
+        console.log('Stock update with data => ', data);
+        dispatch(updateStockItem(id, data));
+      });
+    });
   };
 };
 
@@ -74,28 +120,74 @@ export const setStock = data => ({
 });
 
 export const startSetStock = () => {
+  console.log('startSetStock() got called!');
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/stock`)
-      .once("value")
-      .then(snapshot => {
-        const stock = {
-          aluminium: [],
-          glass: [],
-          ss: [],
-          others: []
-        };
-        snapshot.forEach(childSnapshot => {
-          let values = [];
-          childSnapshot.forEach(singleSnapshot => {
-            let key = singleSnapshot.key;
-            values.push({ id: key, ...singleSnapshot.val() });
-          });
-          stock[childSnapshot.key] = values;
-        });
-        console.log(stock);
-        dispatch(setStock(stock));
+    const stockData = {
+      aluminium: [],
+      glass: [],
+      ss: [],
+      others: []
+    };
+    return new Promise(function(resolve, reject) {
+      db.stock['aluminium'].find({}, function(err, aluminiumDocs) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(aluminiumDocs);
+        }
       });
+    }).then(aluminiumDocs => {
+      console.log('Got aluminium in stock => ', aluminiumDocs);
+      stockData.aluminium = aluminiumDocs.map(singleItem => {
+        return (singleItem = { id: singleItem._id, ...singleItem });
+      }); // Aluminium Doc Set
+
+      return new Promise(function(resolve, reject) {
+        db.stock['glass'].find({}, function(err, glassDocs) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(glassDocs);
+          }
+        });
+      }).then(glassDocs => {
+        console.log('Got glass in stock => ', glassDocs);
+        stockData.glass = glassDocs.map(singleItem => {
+          return (singleItem = { id: singleItem._id, ...singleItem });
+        }); // Glass Doc Set
+
+        return new Promise(function(resolve, reject) {
+          db.stock['ss'].find({}, function(err, ssDocs) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(ssDocs);
+            }
+          });
+        }).then(ssDocs => {
+          console.log('Got ss in stock => ', ssDocs);
+          stockData.ss = ssDocs.map(singleItem => {
+            return (singleItem = { id: singleItem._id, ...singleItem });
+          }); // SS Doc Set
+
+          return new Promise(function(resolve, reject) {
+            db.stock['others'].find({}, function(err, othersDocs) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(othersDocs);
+              }
+            });
+          }).then(othersDocs => {
+            console.log('Got others in stock => ', othersDocs);
+            stockData.others = othersDocs.map(singleItem => {
+              return (singleItem = { id: singleItem._id, ...singleItem });
+            }); // Others Doc Set
+            console.log('Setting up stock with => ', stockData);
+            dispatch(setStock(stockData));
+          });
+        });
+      });
+    });
   };
 };

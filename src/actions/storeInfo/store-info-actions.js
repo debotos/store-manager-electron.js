@@ -87,11 +87,22 @@ export const startSetStoreInfo = () => {
         if (err) {
           reject(err);
         } else {
-          console.log(docs);
-          dispatch(setStoreInfo(docs[0]));
-          resolve(docs[0]);
+          resolve(docs);
         }
       });
+    }).then(docs => {
+      console.log(docs);
+      if (docs.length === 0) {
+        docs[0] = {
+          name: 'Set Your Store NAME',
+          number1: 70000000000,
+          number2: 90000000000,
+          number3: 80000000000,
+          address: 'Set Your Store ADDRESS',
+          password: 12345
+        };
+      }
+      dispatch(setStoreInfo(docs[0]));
     });
   };
 };

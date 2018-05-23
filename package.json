@@ -33,7 +33,7 @@
   "devDependencies": {
     "electron": "^1.7.10",
     "electron-builder": "^19.52.1",
-    "foreman": "^2.0.0"
+    "foreman": "2.0.0"
   },
   "scripts": {
     "dev": "nf start",

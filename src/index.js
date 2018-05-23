@@ -14,6 +14,7 @@ import MainRouter from './components/Router';
 import configureStore from './store/configureStore';
 
 import { startSetStoreInfo } from './actions/storeInfo/store-info-actions';
+import { startSetStock } from './actions/stock/stock-action';
 
 const store = configureStore();
 store.subscribe(() => {
@@ -28,9 +29,14 @@ const jsx = (
   </Provider>
 );
 
-store.dispatch(startSetStoreInfo()).then(() => {
-  ReactDOM.render(jsx, document.getElementById('root'));
-});
+store
+  .dispatch(startSetStoreInfo())
+  .then(() => {
+    return store.dispatch(startSetStock());
+  })
+  .then(() => {
+    ReactDOM.render(jsx, document.getElementById('root'));
+  });
 
 // ReactDOM.render(jsx, document.getElementById('root'));
 
