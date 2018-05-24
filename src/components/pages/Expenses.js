@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { Tabs, Tab } from "material-ui/Tabs";
-import SwipeableViews from "react-swipeable-views";
-import SnackBar from "../ui-element/SnackBar";
+import React, { Component } from 'react';
+import { Tabs, Tab } from 'material-ui/Tabs';
+import SwipeableViews from 'react-swipeable-views';
+import SnackBar from '../ui-element/SnackBar';
 
-import "../../style/expenses/expenses.css";
-import AppBarMain from "../ui-element/AppBarMain";
-import AddExpensesForm from "./subPages/expenses/AddExpensesForm";
-import ExpenseDashboardPage from "./subPages/expenses/ExpensesDashboardPage";
+import '../../style/expenses/expenses.css';
+import AppBarMain from '../ui-element/AppBarMain';
+import AddExpensesForm from './subPages/expenses/AddExpensesForm';
+import ExpenseDashboardPage from './subPages/expenses/ExpensesDashboardPage';
 
 class Expenses extends Component {
   // SnackBar Functions
@@ -38,7 +38,7 @@ class Expenses extends Component {
     super(props);
     this.state = {
       snackBar: false,
-      snackBarMessage: "",
+      snackBarMessage: '',
       tabSlideIndex: 0
     };
   }
@@ -46,12 +46,18 @@ class Expenses extends Component {
   render() {
     return (
       <div>
-        <AppBarMain title={"Expenses"} />
-        <h1 className="animated flip" style={{ textAlign: "center" }}>
-          EXPENSES RECORD
-        </h1>
+        <AppBarMain title={'Expenses'} />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <h1 id="title-heading"> EXPENSES RECORD</h1>
+        </div>
         <div>
-          <div style={{ marginTop: 10 }}>
+          <div>
             <Tabs
               className="container"
               onChange={this.handleTabChange}

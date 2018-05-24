@@ -1,10 +1,10 @@
-import database from "../../secrets/firebase";
+import db from '../../secrets/neDB';
 import {
   ADD_INCOME,
   REMOVE_INCOME,
   EDIT_INCOME,
   SET_INCOMES
-} from "../constants";
+} from '../constants';
 
 // ADD_INCOME
 export const addIncome = income => ({
@@ -16,24 +16,24 @@ export const startAddIncome = (incomeData = {}) => {
   return (dispatch, getState) => {
     const uid = getState().auth.uid;
     const {
-      description = "",
-      note = "",
+      description = '',
+      note = '',
       amount = 0,
       createdAt = 0
     } = incomeData;
     const income = { description, note, amount, createdAt };
 
-    return database
-      .ref(`users/${uid}/incomes`)
-      .push(income)
-      .then(ref => {
-        dispatch(
-          addIncome({
-            id: ref.key,
-            ...income
-          })
-        );
+    return new Promise(function(resolve, reject) {
+      db.incomes.insert(income, function(err, newDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newDoc);
+        }
       });
+    }).then(newDoc => {
+      dispatch(addIncome({ id: newDoc._id, ...newDoc }));
+    });
   };
 };
 
@@ -45,13 +45,17 @@ export const removeIncome = ({ id } = {}) => ({
 
 export const startRemoveIncome = ({ id } = {}) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/incomes/${id}`)
-      .remove()
-      .then(() => {
-        dispatch(removeIncome({ id }));
+    return new Promise(function(resolve, reject) {
+      db.incomes.remove({ _id: id }, {}, function(err, numRemoved) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(numRemoved);
+        }
       });
+    }).then(numRemoved => {
+      dispatch(removeIncome({ id }));
+    });
   };
 };
 
@@ -64,13 +68,31 @@ export const editIncome = (id, updates) => ({
 
 export const startEditIncome = (id, updates) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/incomes/${id}`)
-      .update(updates)
-      .then(() => {
+    return new Promise(function(resolve, reject) {
+      db.incomes.findOne({ _id: id }, function(err, doc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(doc);
+        }
+      });
+    }).then(doc => {
+      console.log('You are trying to update this doc => ', doc);
+
+      return new Promise(function(resolve, reject) {
+        db.incomes.update(doc, updates, {}, function(err, numReplaced) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(numReplaced);
+          }
+        });
+      }).then(numReplaced => {
+        console.log('Income update no => ', numReplaced);
+        console.log('Income update with data => ', updates);
         dispatch(editIncome(id, updates));
       });
+    });
   };
 };
 
@@ -82,21 +104,20 @@ export const setIncomes = incomes => ({
 
 export const startSetIncomes = () => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/incomes`)
-      .once("value")
-      .then(snapshot => {
-        const incomes = [];
-
-        snapshot.forEach(childSnapshot => {
-          incomes.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          });
-        });
-        console.log("Got Income", incomes);
-        dispatch(setIncomes(incomes));
+    return new Promise(function(resolve, reject) {
+      db.incomes.find({}, function(err, incomesDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(incomesDoc);
+        }
       });
+    }).then(incomesDoc => {
+      incomesDoc = incomesDoc.map(
+        singleItem => (singleItem = { id: singleItem._id, ...singleItem })
+      );
+      console.log('Got Income Docs => ', incomesDoc);
+      dispatch(setIncomes(incomesDoc));
+    });
   };
 };

@@ -46,12 +46,18 @@ class Advance extends Component {
     return (
       <div>
         <AppBarMain title={'Advance'} />
-        <h1 className="animated flip" style={{ textAlign: 'center' }}>
-          {' '}
-          ADVANCE RECORD
-        </h1>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <h1 id="title-heading"> ADVANCE RECORD</h1>
+        </div>
+
         <div>
-          <div style={{ marginTop: 10 }}>
+          <div>
             <Tabs
               className="container"
               onChange={this.handleTabChange}

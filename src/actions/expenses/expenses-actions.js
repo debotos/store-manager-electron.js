@@ -1,10 +1,10 @@
-import database from "../../secrets/firebase";
+import db from '../../secrets/neDB';
 import {
   ADD_EXPENSE,
   REMOVE_EXPENSE,
   EDIT_EXPENSE,
   SET_EXPENSES
-} from "../constants";
+} from '../constants';
 
 // ADD_EXPENSE
 export const addExpense = expense => ({
@@ -14,26 +14,25 @@ export const addExpense = expense => ({
 
 export const startAddExpense = (expenseData = {}) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
     const {
-      description = "",
-      note = "",
+      description = '',
+      note = '',
       amount = 0,
       createdAt = 0
     } = expenseData;
     const expense = { description, note, amount, createdAt };
 
-    return database
-      .ref(`users/${uid}/expenses`)
-      .push(expense)
-      .then(ref => {
-        dispatch(
-          addExpense({
-            id: ref.key,
-            ...expense
-          })
-        );
+    return new Promise(function(resolve, reject) {
+      db.expenses.insert(expense, function(err, newDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newDoc);
+        }
       });
+    }).then(newDoc => {
+      dispatch(addExpense({ id: newDoc._id, ...newDoc }));
+    });
   };
 };
 
@@ -45,13 +44,17 @@ export const removeExpense = ({ id } = {}) => ({
 
 export const startRemoveExpense = ({ id } = {}) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/expenses/${id}`)
-      .remove()
-      .then(() => {
-        dispatch(removeExpense({ id }));
+    return new Promise(function(resolve, reject) {
+      db.expenses.remove({ _id: id }, {}, function(err, numRemoved) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(numRemoved);
+        }
       });
+    }).then(numRemoved => {
+      dispatch(removeExpense({ id }));
+    });
   };
 };
 
@@ -64,13 +67,31 @@ export const editExpense = (id, updates) => ({
 
 export const startEditExpense = (id, updates) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/expenses/${id}`)
-      .update(updates)
-      .then(() => {
+    return new Promise(function(resolve, reject) {
+      db.expenses.findOne({ _id: id }, function(err, doc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(doc);
+        }
+      });
+    }).then(doc => {
+      console.log('You are trying to update this doc => ', doc);
+
+      return new Promise(function(resolve, reject) {
+        db.expenses.update(doc, updates, {}, function(err, numReplaced) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(numReplaced);
+          }
+        });
+      }).then(numReplaced => {
+        console.log('Expense update no => ', numReplaced);
+        console.log('Expense update with data => ', updates);
         dispatch(editExpense(id, updates));
       });
+    });
   };
 };
 
@@ -82,21 +103,20 @@ export const setExpenses = expenses => ({
 
 export const startSetExpenses = () => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/expenses`)
-      .once("value")
-      .then(snapshot => {
-        const expenses = [];
-
-        snapshot.forEach(childSnapshot => {
-          expenses.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          });
-        });
-
-        dispatch(setExpenses(expenses));
+    return new Promise(function(resolve, reject) {
+      db.expenses.find({}, function(err, expensesDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(expensesDoc);
+        }
       });
+    }).then(expensesDoc => {
+      expensesDoc = expensesDoc.map(
+        singleItem => (singleItem = { id: singleItem._id, ...singleItem })
+      );
+      console.log('Got Expense Docs => ', expensesDoc);
+      dispatch(setExpenses(expensesDoc));
+    });
   };
 };

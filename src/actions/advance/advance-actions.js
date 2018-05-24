@@ -1,4 +1,4 @@
-import database from '../../secrets/firebase';
+import db from '../../secrets/neDB';
 import {
   ADD_ADVANCE,
   REMOVE_ADVANCE,
@@ -14,7 +14,6 @@ export const addAdvance = advance => ({
 
 export const startAddAdvance = (advanceData = {}) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
     const {
       description = '',
       note = '',
@@ -23,17 +22,17 @@ export const startAddAdvance = (advanceData = {}) => {
     } = advanceData;
     const advance = { description, note, amount, createdAt };
 
-    return database
-      .ref(`users/${uid}/advances`)
-      .push(advance)
-      .then(ref => {
-        dispatch(
-          addAdvance({
-            id: ref.key,
-            ...advance
-          })
-        );
+    return new Promise(function(resolve, reject) {
+      db.advances.insert(advance, function(err, newDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(newDoc);
+        }
       });
+    }).then(newDoc => {
+      dispatch(addAdvance({ id: newDoc._id, ...newDoc }));
+    });
   };
 };
 
@@ -45,13 +44,17 @@ export const removeAdvance = ({ id } = {}) => ({
 
 export const startRemoveAdvance = ({ id } = {}) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/advances/${id}`)
-      .remove()
-      .then(() => {
-        dispatch(removeAdvance({ id }));
+    return new Promise(function(resolve, reject) {
+      db.advances.remove({ _id: id }, {}, function(err, numRemoved) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(numRemoved);
+        }
       });
+    }).then(numRemoved => {
+      dispatch(removeAdvance({ id }));
+    });
   };
 };
 
@@ -64,13 +67,31 @@ export const editAdvance = (id, updates) => ({
 
 export const startEditAdvance = (id, updates) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/advances/${id}`)
-      .update(updates)
-      .then(() => {
+    return new Promise(function(resolve, reject) {
+      db.advances.findOne({ _id: id }, function(err, doc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(doc);
+        }
+      });
+    }).then(doc => {
+      console.log('You are trying to update this doc => ', doc);
+
+      return new Promise(function(resolve, reject) {
+        db.advances.update(doc, updates, {}, function(err, numReplaced) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(numReplaced);
+          }
+        });
+      }).then(numReplaced => {
+        console.log('Advance update no => ', numReplaced);
+        console.log('Advance update with data => ', updates);
         dispatch(editAdvance(id, updates));
       });
+    });
   };
 };
 
@@ -82,21 +103,20 @@ export const setAdvances = advances => ({
 
 export const startSetAdvances = () => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/advances`)
-      .once('value')
-      .then(snapshot => {
-        const advances = [];
-
-        snapshot.forEach(childSnapshot => {
-          advances.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          });
-        });
-        console.log('Got Advance', advances);
-        dispatch(setAdvances(advances));
+    return new Promise(function(resolve, reject) {
+      db.advances.find({}, function(err, advancesDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(advancesDoc);
+        }
       });
+    }).then(advancesDoc => {
+      advancesDoc = advancesDoc.map(
+        singleItem => (singleItem = { id: singleItem._id, ...singleItem })
+      );
+      console.log('Got Advance Docs => ', advancesDoc);
+      dispatch(setAdvances(advancesDoc));
+    });
   };
 };

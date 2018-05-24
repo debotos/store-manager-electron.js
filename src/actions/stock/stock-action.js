@@ -5,7 +5,6 @@ import {
   UPDATE_STOCK_ITEM
 } from '../constants';
 import db from '../../secrets/neDB';
-import database from '../../secrets/firebase';
 
 // CURD Actions of Database is here
 
