@@ -20,6 +20,8 @@ import { startSetExpenses } from './actions/expenses/expenses-actions';
 import { startSetIncomes } from './actions/others-income/income-actions';
 import { startSetReadyCash } from './actions/ready-cash/ready-cash-actions';
 import { startSetReadyCashAmount } from './actions/ready-cash/ready-cash-amount-actions';
+import { startSetMemoNumber } from './actions/sells/memo-no-actions';
+import { startSetExistingDueFromServer } from './actions/sells/prevDue-actions';
 
 const store = configureStore();
 store.subscribe(() => {
@@ -49,10 +51,16 @@ store
     return store.dispatch(startSetIncomes());
   })
   .then(() => {
+    return store.dispatch(startSetMemoNumber());
+  })
+  .then(() => {
     return store.dispatch(startSetReadyCash());
   })
   .then(() => {
     return store.dispatch(startSetReadyCashAmount());
+  })
+  .then(() => {
+    return store.dispatch(startSetExistingDueFromServer());
   })
   .then(() => {
     ReactDOM.render(jsx, document.getElementById('root'));

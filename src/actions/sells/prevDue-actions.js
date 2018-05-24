@@ -1,10 +1,10 @@
-import database from "../../secrets/firebase";
+import db from '../../secrets/neDB';
 import {
   ADD_A_PREV_DUE,
   SET_DUE,
   UPDATE_A_PREV_DUE,
   REMOVE_A_PREV_DUE
-} from "../constants";
+} from '../constants';
 
 export const addPrevDue = (id, number, amount, info) => {
   return {
@@ -19,65 +19,81 @@ export const addPrevDue = (id, number, amount, info) => {
 };
 
 // Server Side Code for adding a due [Firebase :)]
-export const startAddPrevDue = (number, amount, info, id = "") => {
+export const startAddPrevDue = (number, amount, info, id = '') => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
     const due = { number, amount, info };
-    let dueInDatabase = [];
-    // Putting all id in an array
-    database
-      .ref(`users/${uid}/due`)
-      .once("value")
-      .then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-          dueInDatabase.push({ id: childSnapshot.key, ...childSnapshot.val() });
-        });
-      })
-      .then(() => {
-        // checking if any due exists
-        if (dueInDatabase.length > 0) {
-          // checking due that i want... already exists that account
-          let dueItemAlreadyExists = false;
-          let dueItemIdThatAlreadyExists;
-          dueInDatabase.forEach(singleDue => {
-            if (singleDue.number === number) {
-              dueItemAlreadyExists = true;
-              dueItemIdThatAlreadyExists = singleDue.id;
-            }
-          });
-          // Now i know that already have or not, so...go for it
-          if (dueItemAlreadyExists) {
-            // Overide the value that exists
-            return database
-              .ref(`users/${uid}/due/${dueItemIdThatAlreadyExists}`)
-              .update(due)
-              .then(() => {
-                dispatch(
-                  addPrevDue(
-                    (id = dueItemIdThatAlreadyExists),
-                    number,
-                    amount,
-                    info
-                  )
-                );
-              });
-          } else {
-            return database
-              .ref(`users/${uid}/due`)
-              .push(due)
-              .then(ref => {
-                dispatch(addPrevDue((id = ref.key), number, amount, info));
-              });
-          }
+    return new Promise(function(resolve, reject) {
+      db['due'].find({}, function(err, dueDoc) {
+        if (err) {
+          reject(err);
         } else {
-          return database
-            .ref(`users/${uid}/due`)
-            .push(due)
-            .then(ref => {
-              dispatch(addPrevDue((id = ref.key), number, amount, info));
-            });
+          resolve(dueDoc);
         }
       });
+    }).then(dueDoc => {
+      if (dueDoc.length > 0) {
+        let dueItemAlreadyExists = false;
+        let dueItemIdThatAlreadyExists;
+        dueDoc.forEach(singleDue => {
+          if (singleDue.number === number) {
+            dueItemAlreadyExists = true;
+            dueItemIdThatAlreadyExists = singleDue._id;
+          }
+        });
+        if (dueItemAlreadyExists) {
+          return new Promise(function(resolve, reject) {
+            db['due'].update(
+              { _id: dueItemIdThatAlreadyExists },
+              due,
+              {},
+              function(err, numReplaced) {
+                if (err) {
+                  reject(err);
+                } else {
+                  resolve(numReplaced);
+                }
+              }
+            );
+          }).then(numReplaced => {
+            console.log('Number already exists in Due, so Due Updated!');
+            dispatch(
+              addPrevDue(
+                (id = dueItemIdThatAlreadyExists),
+                number,
+                amount,
+                info
+              )
+            );
+          });
+        } else {
+          return new Promise(function(resolve, reject) {
+            db['due'].insert(due, function(err, newDoc) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(newDoc);
+              }
+            });
+          }).then(newDoc => {
+            console.log('Number is New in Due, so Due Added!');
+            dispatch(addPrevDue((id = newDoc._id), number, amount, info));
+          });
+        }
+      } else {
+        return new Promise(function(resolve, reject) {
+          db['due'].insert(due, function(err, newDoc) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(newDoc);
+            }
+          });
+        }).then(newDoc => {
+          console.log('Number is New in Due, so Due Added!');
+          dispatch(addPrevDue((id = newDoc._id), number, amount, info));
+        });
+      }
+    });
   };
 };
 
@@ -98,19 +114,24 @@ const updatePrevDue = (id, number, amount, info) => {
 };
 
 export const startUpdatePrevDue = (id, number, amount, info) => {
+  const dueUpdates = {
+    number,
+    amount,
+    info
+  };
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    const dueUpdates = {
-      number,
-      amount,
-      info
-    };
-    return database
-      .ref(`users/${uid}/due/${id}`)
-      .update(dueUpdates)
-      .then(() => {
-        dispatch(updatePrevDue(id, number, amount, info));
+    return new Promise(function(resolve, reject) {
+      db['due'].update({ _id: id }, dueUpdates, {}, function(err, numReplaced) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(numReplaced);
+        }
       });
+    }).then(numReplaced => {
+      console.log('Due Updated!');
+      dispatch(updatePrevDue(id, number, amount, info));
+    });
   };
 };
 
@@ -124,13 +145,18 @@ const removePrevDue = id => {
 
 export const startRemovePrevDue = id => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/due/${id}`)
-      .remove()
-      .then(() => {
-        dispatch(removePrevDue(id));
+    return new Promise(function(resolve, reject) {
+      db['due'].remove({ _id: id }, {}, function(err, numRemoved) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(numRemoved);
+        }
       });
+    }).then(numRemoved => {
+      console.log('Due Removed!');
+      dispatch(removePrevDue(id));
+    });
   };
 };
 
@@ -141,21 +167,20 @@ export const setDue = data => ({
 
 export const startSetExistingDueFromServer = () => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/due`)
-      .once("value")
-      .then(snapshot => {
-        const due = [];
-
-        snapshot.forEach(childSnapshot => {
-          due.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          });
-        });
-
-        dispatch(setDue(due));
+    return new Promise(function(resolve, reject) {
+      db['due'].find({}, function(err, dueDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(dueDoc);
+        }
       });
+    }).then(dueDoc => {
+      dueDoc = dueDoc.map(
+        singleItem => (singleItem = { id: singleItem._id, ...singleItem })
+      );
+      console.log('Setting up Due with => ', dueDoc);
+      dispatch(setDue(dueDoc));
+    });
   };
 };

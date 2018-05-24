@@ -1,5 +1,5 @@
-import database from "../../secrets/firebase";
-import { INCREMENT_MEMO_NUMBER, START_SET_MEMO_NUMBER } from "../constants";
+import db from '../../secrets/neDB';
+import { INCREMENT_MEMO_NUMBER, START_SET_MEMO_NUMBER } from '../constants';
 
 export const incrementMemoNumber = (id, memoNumber) => {
   return {
@@ -12,48 +12,56 @@ export const incrementMemoNumber = (id, memoNumber) => {
 };
 
 export const startIncrementMemoNumber = () => {
+  let memoDoc;
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    let currentValue;
-    let currentValueId;
-    let allValue = [];
-    database
-      .ref(`users/${uid}/memo`)
-      .once("value")
-      .then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-          currentValue = childSnapshot.val().memoNumber;
-          console.log("current memo NO. ", currentValue);
-          currentValueId = childSnapshot.key;
-          console.log("current memo ID ", currentValueId);
-          allValue.push(childSnapshot.val());
-        });
-      })
-      .then(() => {
-        let data;
-        if (allValue.length > 0) {
-          let value = parseInt(currentValue, 10) + 1;
-          data = {
-            memoNumber: value
-          };
-          return database
-            .ref(`users/${uid}/memo/${currentValueId}`)
-            .update(data)
-            .then(() => {
-              dispatch(incrementMemoNumber(currentValueId, value));
-            });
+    return new Promise(function(resolve, reject) {
+      db['memo'].find({}, function(err, memoDoc) {
+        if (err) {
+          reject(err);
         } else {
-          data = {
-            memoNumber: 2
-          };
-          return database
-            .ref(`users/${uid}/memo`)
-            .push(data)
-            .then(ref => {
-              dispatch(incrementMemoNumber(ref.key, data.memoNumber));
-            });
+          resolve(memoDoc);
         }
       });
+    }).then(memoDoc => {
+      let data;
+      if (memoDoc.length > 0) {
+        memoDoc = memoDoc[0];
+        let value = parseInt(memoDoc.memoNumber, 10) + 1;
+        data = {
+          memoNumber: value
+        };
+        // Update Doc
+        return new Promise(function(resolve, reject) {
+          db['memo'].update(memoDoc[0], data, {}, function(err, numReplaced) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(numReplaced);
+            }
+          });
+        }).then(numReplaced => {
+          console.log('memo Update no => ', numReplaced);
+          console.log('memo Updated with data => ', data);
+          dispatch(incrementMemoNumber(memoDoc._id, data.memoNumber));
+        });
+      } else {
+        // Insert Doc
+        data = {
+          memoNumber: 2
+        };
+        return new Promise(function(resolve, reject) {
+          db['memo'].insert(data, function(err, newDoc) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(newDoc);
+            }
+          });
+        }).then(newDoc => {
+          dispatch(incrementMemoNumber(newDoc._id, newDoc.memoNumber));
+        });
+      }
+    });
   };
 };
 
@@ -63,22 +71,26 @@ export const setMemoNumber = data => ({
 });
 
 export const startSetMemoNumber = () => {
+  let memoNoDoc = { id: '', memoNumber: 1 };
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/memo`)
-      .once("value")
-      .then(snapshot => {
-        let memo = { id: "", memoNumber: 1 };
-
-        snapshot.forEach(childSnapshot => {
-          memo = {
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          };
-        });
-
-        dispatch(setMemoNumber(memo));
+    return new Promise(function(resolve, reject) {
+      db['memo'].find({}, function(err, memoDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(memoDoc);
+        }
       });
+    }).then(memoDoc => {
+      memoDoc = memoDoc.map(
+        singleItem => (singleItem = { id: singleItem._id, ...singleItem })
+      );
+      console.log('Got memoDoc => ', memoDoc);
+      if (memoDoc.length > 0) {
+        memoNoDoc = { ...memoDoc[0] };
+      }
+      console.log('Setting up memo with =>', memoDoc);
+      dispatch(setMemoNumber(memoNoDoc));
+    });
   };
 };

@@ -1,4 +1,3 @@
-import database from '../../secrets/firebase';
 import db from '../../secrets/neDB';
 import {
   UPDATE_READY_CASH_AMOUNT,
