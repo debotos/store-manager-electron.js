@@ -1,9 +1,10 @@
-import database from "../../secrets/firebase";
+import database from '../../secrets/firebase';
+import db from '../../secrets/neDB';
 import {
   UPDATE_READY_CASH_AMOUNT,
   SET_READY_CASH_AMOUNT,
   OVERRIDE_READY_CASH_AMOUNT
-} from "../constants";
+} from '../constants';
 
 export const overrideReadyCash = (id, amount) => {
   return {
@@ -16,49 +17,56 @@ export const overrideReadyCash = (id, amount) => {
 };
 
 export const startOverrideReadyCash = amount => {
+  let readyCashDoc;
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    let currentValue;
-    let currentValueId;
-    let allValue = [];
-    database
-      .ref(`users/${uid}/ready-cash-amount`)
-      .once("value")
-      .then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-          currentValue = childSnapshot.val().amount;
-          console.log("current Ready Cash Amount ", currentValue);
-          currentValueId = childSnapshot.key;
-          console.log("current Ready Cash Amount ID ", currentValueId);
-          allValue.push(childSnapshot.val());
-        });
-      })
-      .then(() => {
-        let data;
-        if (allValue.length > 0) {
-          console.log("got amount", amount);
-          let value = parseFloat(amount).toFixed(2);
-          data = {
-            amount: value
-          };
-          return database
-            .ref(`users/${uid}/ready-cash-amount/${currentValueId}`)
-            .update(data)
-            .then(() => {
-              dispatch(overrideReadyCash(currentValueId, value));
-            });
+    return new Promise(function(resolve, reject) {
+      db['readyCashAmount'].find({}, function(err, readyCashAmountDoc) {
+        if (err) {
+          reject(err);
         } else {
-          data = {
-            amount: parseFloat(amount).toFixed(2)
-          };
-          return database
-            .ref(`users/${uid}/ready-cash-amount`)
-            .push(data)
-            .then(ref => {
-              dispatch(overrideReadyCash(ref.key, data.amount));
-            });
+          resolve(readyCashAmountDoc);
         }
       });
+    }).then(readyCashAmountDoc => {
+      let data = {
+        amount: parseFloat(amount).toFixed(2)
+      };
+      if (readyCashAmountDoc.length === 0) {
+        // Insert Doc
+        return new Promise(function(resolve, reject) {
+          db['readyCashAmount'].insert(data, function(err, newDoc) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(newDoc);
+            }
+          });
+        }).then(newDoc => {
+          dispatch(overrideReadyCash(newDoc._id, newDoc.amount));
+        });
+      } else {
+        // Update Doc
+        readyCashDoc = readyCashAmountDoc[0];
+        return new Promise(function(resolve, reject) {
+          db['readyCashAmount'].update(
+            readyCashAmountDoc[0],
+            data,
+            {},
+            function(err, numReplaced) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(numReplaced);
+              }
+            }
+          );
+        }).then(numReplaced => {
+          console.log('ReadyCashAmount OverrideUpdate no => ', numReplaced);
+          console.log('ReadyCashAmount OverrideUpdated with data => ', data);
+          dispatch(overrideReadyCash(readyCashDoc._id, data.amount));
+        });
+      }
+    });
   };
 };
 
@@ -73,51 +81,63 @@ export const updateReadyCash = (id, amount) => {
 };
 
 export const startUpdateReadyCash = amount => {
+  let readyCashDoc;
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    let currentValue;
-    let currentValueId;
-    let allValue = [];
-    database
-      .ref(`users/${uid}/ready-cash-amount`)
-      .once("value")
-      .then(snapshot => {
-        snapshot.forEach(childSnapshot => {
-          currentValue = childSnapshot.val().amount;
-          console.log("current Ready Cash Amount ", currentValue);
-          currentValueId = childSnapshot.key;
-          console.log("current Ready Cash Amount ID ", currentValueId);
-          allValue.push(childSnapshot.val());
-        });
-      })
-      .then(() => {
-        let data;
-        if (allValue.length > 0) {
-          console.log("got amount", amount);
-          let value = (parseFloat(currentValue) + parseFloat(amount)).toFixed(
-            2
-          );
-          data = {
-            amount: value
-          };
-          return database
-            .ref(`users/${uid}/ready-cash-amount/${currentValueId}`)
-            .update(data)
-            .then(() => {
-              dispatch(updateReadyCash(currentValueId, value));
-            });
+    return new Promise(function(resolve, reject) {
+      db['readyCashAmount'].find({}, function(err, readyCashAmountDoc) {
+        if (err) {
+          reject(err);
         } else {
-          data = {
-            amount: parseFloat(amount).toFixed(2)
-          };
-          return database
-            .ref(`users/${uid}/ready-cash-amount`)
-            .push(data)
-            .then(ref => {
-              dispatch(updateReadyCash(ref.key, data.amount));
-            });
+          resolve(readyCashAmountDoc);
         }
       });
+    }).then(readyCashAmountDoc => {
+      let data;
+      if (readyCashAmountDoc.length === 0) {
+        // Insert Doc
+        data = {
+          amount: parseFloat(amount).toFixed(2)
+        };
+        return new Promise(function(resolve, reject) {
+          db['readyCashAmount'].insert(data, function(err, newDoc) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(newDoc);
+            }
+          });
+        }).then(newDoc => {
+          dispatch(updateReadyCash(newDoc._id, newDoc.amount));
+        });
+      } else {
+        // Update Doc
+        readyCashDoc = readyCashAmountDoc[0];
+        let value = (
+          parseFloat(readyCashDoc.amount) + parseFloat(amount)
+        ).toFixed(2);
+        data = {
+          amount: value
+        };
+        return new Promise(function(resolve, reject) {
+          db['readyCashAmount'].update(
+            readyCashAmountDoc[0],
+            data,
+            {},
+            function(err, numReplaced) {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(numReplaced);
+              }
+            }
+          );
+        }).then(numReplaced => {
+          console.log('ReadyCashAmount Update no => ', numReplaced);
+          console.log('ReadyCashAmount Updated with data => ', data);
+          dispatch(updateReadyCash(readyCashDoc._id, data.amount));
+        });
+      }
+    });
   };
 };
 
@@ -127,22 +147,26 @@ export const setReadyCashAmount = data => ({
 });
 
 export const startSetReadyCashAmount = () => {
+  let readyCashAmoumt = { id: '', amount: 0 };
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
-    return database
-      .ref(`users/${uid}/ready-cash-amount`)
-      .once("value")
-      .then(snapshot => {
-        let readyCashAmoumt = { id: "", amount: 0 };
-
-        snapshot.forEach(childSnapshot => {
-          readyCashAmoumt = {
-            id: childSnapshot.key,
-            ...childSnapshot.val()
-          };
-        });
-        console.log(readyCashAmoumt);
-        dispatch(setReadyCashAmount(readyCashAmoumt));
+    return new Promise(function(resolve, reject) {
+      db['readyCashAmount'].find({}, function(err, readyCashAmountDoc) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(readyCashAmountDoc);
+        }
       });
+    }).then(readyCashAmountDoc => {
+      readyCashAmountDoc = readyCashAmountDoc.map(
+        singleItem => (singleItem = { id: singleItem._id, ...singleItem })
+      );
+      console.log('Got readyCashAmountDoc => ', readyCashAmountDoc);
+      if (readyCashAmountDoc.length > 0) {
+        readyCashAmoumt = { ...readyCashAmountDoc[0] };
+      }
+      console.log('Setting up ReadyCashAmount with =>', readyCashAmoumt);
+      dispatch(setReadyCashAmount(readyCashAmoumt));
+    });
   };
 };

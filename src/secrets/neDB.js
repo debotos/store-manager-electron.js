@@ -24,6 +24,7 @@ db.memo = new Datastore({ filename: 'memo.db', autoload: true });
 db.info = new Datastore({ filename: 'info.db', autoload: true });
 
 db.readyCash = {};
+db.readyCashAmount = new Datastore({ filename: 'readyCashAmount.db', autoload: true });
 db.readyCash.income = new Datastore({
   filename: 'readyCash.income.db',
   autoload: true

@@ -4,7 +4,6 @@ import {
   RESET_READY_CASH,
   REMOVE_AN_ENTRY_FROM_READY_CASH
 } from '../constants';
-import database from '../../secrets/firebase';
 import expenses from '../../components/pages/subPages/expenses/utility-func/expenses';
 import db from '../../secrets/neDB';
 

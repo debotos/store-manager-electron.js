@@ -1,28 +1,28 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 // import ReactCountdownClock from "react-countdown-clock";
-import { Card, CardTitle } from "material-ui/Card";
-import numeral from "numeral";
-import { connect } from "react-redux";
-import RaisedButton from "material-ui/RaisedButton";
-import SvgIcon from "material-ui/SvgIcon";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import Toggle from "material-ui/Toggle";
-import TextField from "material-ui/TextField";
-import SnackBar from "../../../ui-element/SnackBar";
-import noInternet from "no-internet";
+import { Card, CardTitle } from 'material-ui/Card';
+import numeral from 'numeral';
+import { connect } from 'react-redux';
+import RaisedButton from 'material-ui/RaisedButton';
+import SvgIcon from 'material-ui/SvgIcon';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import Toggle from 'material-ui/Toggle';
+import TextField from 'material-ui/TextField';
+import SnackBar from '../../../ui-element/SnackBar';
+import noInternet from 'no-internet';
 
-import AppBarMain from "../../../ui-element/AppBarMain";
-import ReadyCashIncomeList from "./ReadyCashIncomeList";
-import ReadyCashExpensesList from "./ReadyCashExpensesList";
-import ReadyCashTotal from "./ReadyCashTotal";
+import AppBarMain from '../../../ui-element/AppBarMain';
+import ReadyCashIncomeList from './ReadyCashIncomeList';
+import ReadyCashExpensesList from './ReadyCashExpensesList';
+import ReadyCashTotal from './ReadyCashTotal';
 // import { ExpenseList } from "../expenses/ExpensesList";
-import { startResetReadyCash } from "../../../../actions/ready-cash/ready-cash-actions";
+import { startResetReadyCash } from '../../../../actions/ready-cash/ready-cash-actions';
 import {
   startUpdateReadyCash,
   startOverrideReadyCash
-} from "../../../../actions/ready-cash/ready-cash-amount-actions";
-import GENERATE_PDF from "./PDF";
+} from '../../../../actions/ready-cash/ready-cash-amount-actions';
+import GENERATE_PDF from './PDF';
 // import Navigation from "../Navigation";
 
 class ReadyCashMain extends Component {
@@ -48,7 +48,7 @@ class ReadyCashMain extends Component {
     noInternet().then(offline => {
       if (offline) {
         // no internet
-        this.showSnackBar("Failed ! No Internet Connection !");
+        this.showSnackBar('Failed ! No Internet Connection !');
       } else {
         // internet have
         this.setState({ open: true });
@@ -59,16 +59,16 @@ class ReadyCashMain extends Component {
   handleClose = () => {
     this.setState({ open: false });
     this.setState({ confirmButton: true });
-    this.setState({ password: "" });
+    this.setState({ password: '' });
   };
 
   constructor(props) {
     super(props);
     this.state = {
       snackBar: false,
-      snackBarMessage: "",
+      snackBarMessage: '',
       confirmButton: true,
-      password: "",
+      password: '',
       open: false,
       showEditReadyCash: false,
       overrideReadyCashAmount: this.props.readyCashAmount.amount
@@ -96,7 +96,7 @@ class ReadyCashMain extends Component {
           parseFloat(this.calculateExpensesTotal())
       )
     );
-    this.showSnackBar("Reset Data Successfull !");
+    this.showSnackBar('Reset Data Successfull !');
   };
   calculateExpensesTotal = () => {
     let expensesTotal = 0;
@@ -142,7 +142,7 @@ class ReadyCashMain extends Component {
     let amount = this.state.overrideReadyCashAmount;
     this.props.startOverrideReadyCash(amount);
     this.showSnackBar(
-      <p style={{ color: "red" }}>Successfully Updated Ready Cash &#9786;</p>
+      <p style={{ color: 'red' }}>Successfully Updated Ready Cash &#9786;</p>
     );
   };
   decideDisableOrNot = () => {
@@ -167,7 +167,7 @@ class ReadyCashMain extends Component {
     ];
     return (
       <div>
-        <AppBarMain title={"Ready Cash"} />
+        <AppBarMain title={'Ready Cash'} />
         {/* Title Bar */}
 
         <Card
@@ -178,18 +178,18 @@ class ReadyCashMain extends Component {
         >
           <div
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              flexWrap: "wrap"
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap'
             }}
           >
             <div>
               <div>
                 <strong>
-                  Previous Ready Cash{" "}
+                  Previous Ready Cash{' '}
                   {numeral(
                     parseFloat(this.props.readyCashAmount.amount)
-                  ).format("0,0.00")}{" "}
+                  ).format('0,0.00')}{' '}
                   &#x9f3;
                 </strong>
                 <Toggle
@@ -269,7 +269,7 @@ class ReadyCashMain extends Component {
                 readyCashAmount={this.props.readyCashAmount.amount}
               />
             </div>
-            <div className="container" style={{ textAlign: "center" }}>
+            <div className="container" style={{ textAlign: 'center' }}>
               <RaisedButton
                 className="animated infinite tada"
                 onClick={this.handlePDFGenerate}
@@ -298,7 +298,7 @@ class ReadyCashMain extends Component {
             </div>
           </div>
         ) : (
-          <div style={{ color: "red", textAlign: "center", marginTop: 15 }}>
+          <div style={{ color: 'red', textAlign: 'center', marginTop: 15 }}>
             <h4 className="animated infinite swing">
               Income and Expenses Is Empty !
             </h4>
@@ -310,7 +310,7 @@ class ReadyCashMain extends Component {
           modal={false}
           open={this.state.open}
           title={
-            <div style={{ color: "red" }}>
+            <div style={{ color: 'red' }}>
               Are You Sure? You Should Reset It Only After 24 Hour !
               (Warning...) Genetate The PDF First !
             </div>
