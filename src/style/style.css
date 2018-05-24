@@ -4,6 +4,22 @@
   box-sizing: border-box;
 }
 
+#store-name {
+  text-align: center;
+  margin: 0;
+  color: #28b48554;
+  font-weight: 700;
+  background-image: linear-gradient( to right, #28b485, #f1cd29);
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: all 0.2s;
+}
+
+#store-name:hover {
+  transform: scale(1.1);
+  text-shadow: 0.5rem 1rem 2rem rgba( #000, 0.2);
+}
+
 .square_btn {
   display: inline-block;
   padding: 0.5em 1em;

@@ -18,6 +18,7 @@ import { startSetStock } from './actions/stock/stock-action';
 import { startSetAdvances } from './actions/advance/advance-actions';
 import { startSetExpenses } from './actions/expenses/expenses-actions';
 import { startSetIncomes } from './actions/others-income/income-actions';
+import { startSetReadyCash } from './actions/ready-cash/ready-cash-actions';
 
 const store = configureStore();
 store.subscribe(() => {
@@ -45,6 +46,9 @@ store
   })
   .then(() => {
     return store.dispatch(startSetIncomes());
+  })
+  .then(() => {
+    return store.dispatch(startSetReadyCash());
   })
   .then(() => {
     ReactDOM.render(jsx, document.getElementById('root'));

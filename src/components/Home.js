@@ -121,7 +121,7 @@ class Home extends Component {
       <div>
         <AppBarMain />
         <div className="animated bounceInUp">
-          <div className="container" style={{ marginTop: 5 }}>
+          <div className="container" style={{ marginTop: 5, marginBottom: 0 }}>
             <div
               className="analog-clock"
               style={{
@@ -155,9 +155,10 @@ class Home extends Component {
                 title="Digital Clock"
               />
             </div>
+            <h1 id="store-name" style={{ textAlign: 'center' }}>
+              Store Management Software
+            </h1>
           </div>
-
-          <h1 style={{ textAlign: 'center' }}>Store Management Software</h1>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={styles.wrapper}>
