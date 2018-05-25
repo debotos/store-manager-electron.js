@@ -77,7 +77,7 @@ export const startEditIncome = (id, updates) => {
         }
       });
     }).then(doc => {
-      console.log('You are trying to update this doc => ', doc);
+      // console.log('You are trying to update this doc => ', doc);
 
       return new Promise(function(resolve, reject) {
         db.incomes.update(doc, updates, {}, function(err, numReplaced) {
@@ -88,8 +88,8 @@ export const startEditIncome = (id, updates) => {
           }
         });
       }).then(numReplaced => {
-        console.log('Income update no => ', numReplaced);
-        console.log('Income update with data => ', updates);
+        // console.log('Income update no => ', numReplaced);
+        // console.log('Income update with data => ', updates);
         dispatch(editIncome(id, updates));
       });
     });
@@ -116,7 +116,7 @@ export const startSetIncomes = () => {
       incomesDoc = incomesDoc.map(
         singleItem => (singleItem = { id: singleItem._id, ...singleItem })
       );
-      console.log('Got Income Docs => ', incomesDoc);
+      // console.log('Got Income Docs => ', incomesDoc);
       dispatch(setIncomes(incomesDoc));
     });
   };

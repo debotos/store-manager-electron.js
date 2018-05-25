@@ -18,7 +18,7 @@ export const addPrevDue = (id, number, amount, info) => {
   };
 };
 
-// Server Side Code for adding a due [Firebase :)]
+// Server Side Code for adding a due [neDB :)]
 export const startAddPrevDue = (number, amount, info, id = '') => {
   return (dispatch, getState) => {
     const due = { number, amount, info };
@@ -36,6 +36,7 @@ export const startAddPrevDue = (number, amount, info, id = '') => {
         let dueItemIdThatAlreadyExists;
         dueDoc.forEach(singleDue => {
           if (singleDue.number === number) {
+            // console.log('Number already have Due and id is => ', singleDue._id);
             dueItemAlreadyExists = true;
             dueItemIdThatAlreadyExists = singleDue._id;
           }
@@ -50,19 +51,15 @@ export const startAddPrevDue = (number, amount, info, id = '') => {
                 if (err) {
                   reject(err);
                 } else {
+                  // console.log('Due Updated with doc => ', due);
                   resolve(numReplaced);
                 }
               }
             );
           }).then(numReplaced => {
-            console.log('Number already exists in Due, so Due Updated!');
+            // console.log('Number already exists in Due, so Due Updated!');
             dispatch(
-              addPrevDue(
-                (id = dueItemIdThatAlreadyExists),
-                number,
-                amount,
-                info
-              )
+              addPrevDue(dueItemIdThatAlreadyExists, number, amount, info)
             );
           });
         } else {
@@ -75,7 +72,7 @@ export const startAddPrevDue = (number, amount, info, id = '') => {
               }
             });
           }).then(newDoc => {
-            console.log('Number is New in Due, so Due Added!');
+            // console.log('Number is New in Due, so Due Added!');
             dispatch(addPrevDue((id = newDoc._id), number, amount, info));
           });
         }
@@ -89,7 +86,7 @@ export const startAddPrevDue = (number, amount, info, id = '') => {
             }
           });
         }).then(newDoc => {
-          console.log('Number is New in Due, so Due Added!');
+          // console.log('Number is New in Due, so Due Added!');
           dispatch(addPrevDue((id = newDoc._id), number, amount, info));
         });
       }
@@ -129,7 +126,7 @@ export const startUpdatePrevDue = (id, number, amount, info) => {
         }
       });
     }).then(numReplaced => {
-      console.log('Due Updated!');
+      // console.log('Due Updated!');
       dispatch(updatePrevDue(id, number, amount, info));
     });
   };
@@ -154,7 +151,7 @@ export const startRemovePrevDue = id => {
         }
       });
     }).then(numRemoved => {
-      console.log('Due Removed!');
+      // console.log('Due Removed!');
       dispatch(removePrevDue(id));
     });
   };
@@ -179,7 +176,7 @@ export const startSetExistingDueFromServer = () => {
       dueDoc = dueDoc.map(
         singleItem => (singleItem = { id: singleItem._id, ...singleItem })
       );
-      console.log('Setting up Due with => ', dueDoc);
+      // console.log('Setting up Due with => ', dueDoc);
       dispatch(setDue(dueDoc));
     });
   };

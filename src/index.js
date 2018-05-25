@@ -22,11 +22,12 @@ import { startSetReadyCash } from './actions/ready-cash/ready-cash-actions';
 import { startSetReadyCashAmount } from './actions/ready-cash/ready-cash-amount-actions';
 import { startSetMemoNumber } from './actions/sells/memo-no-actions';
 import { startSetExistingDueFromServer } from './actions/sells/prevDue-actions';
+import { startSetAddSellUnderCustomerHistory } from './actions/sells/sells-history-actions';
 
 const store = configureStore();
-store.subscribe(() => {
-  console.log(store.getState());
-});
+// store.subscribe(() => {
+//   console.log(store.getState());
+// });
 
 const jsx = (
   <Provider store={store}>
@@ -61,6 +62,9 @@ store
   })
   .then(() => {
     return store.dispatch(startSetExistingDueFromServer());
+  })
+  .then(() => {
+    return store.dispatch(startSetAddSellUnderCustomerHistory());
   })
   .then(() => {
     ReactDOM.render(jsx, document.getElementById('root'));

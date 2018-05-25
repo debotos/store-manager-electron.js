@@ -1,4 +1,5 @@
 .textarea {
+  outline: none;
   border: none;
   height: 50rem;
   width: 100%;

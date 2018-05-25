@@ -1,29 +1,29 @@
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import numeral from "numeral";
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import numeral from 'numeral';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const getCompanyPhoneNo = storeInfo => {
   let phone = [];
-  phone.push(" " + storeInfo.number1);
-  phone.push(" " + storeInfo.number2);
-  phone.push(" " + storeInfo.number3);
+  phone.push(' ' + storeInfo.number1);
+  phone.push(' ' + storeInfo.number2);
+  phone.push(' ' + storeInfo.number3);
   return phone;
 };
 
 const renderPrevDue = prevDue => {
   if (parseInt(prevDue, 10) === 0) {
-    return " [paid]";
+    return ' [paid]';
   } else {
-    return numeral(parseFloat(prevDue)).format("0,0.00");
+    return numeral(parseFloat(prevDue)).format('0,0.00');
   }
 };
 
 const renderNewDue = newDue => {
   if (parseInt(newDue, 10) === 0) {
-    return " [paid]";
+    return ' [paid]';
   } else {
-    return numeral(parseFloat(newDue)).format("0,0.00") + " Taka";
+    return numeral(parseFloat(newDue)).format('0,0.00') + ' Taka';
   }
 };
 
@@ -34,54 +34,51 @@ const renderAdvance = customer => {
   }
   return {
     text:
-      "Deposit Now (" +
-      numeral(parseFloat(customer.depositNow)).format("0,0.00") +
-      ") + Previous Advance (" +
-      numeral(parseFloat(advance)).format("0,0.00") +
-      ") = " +
+      'Deposit Now (' +
+      numeral(parseFloat(customer.depositNow)).format('0,0.00') +
+      ') + Previous Advance (' +
+      numeral(parseFloat(advance)).format('0,0.00') +
+      ') = ' +
       numeral(parseFloat(customer.depositNow) + parseFloat(advance)).format(
-        "0,0.00"
+        '0,0.00'
       ) +
-      " Taka",
+      ' Taka',
     italics: true,
     bold: true,
-    color: "green"
+    color: 'green'
   };
 };
 
 function GENERATE_PDF(data, date = null) {
   let { details, customer, memoNumber, storeInfo } = data;
-  console.log("====================================");
-  console.log("GENERATE_PDF got Date ", date);
-  console.log("====================================");
   var docDefinition = {
     watermark: {
       text: storeInfo.name,
-      color: "blue",
+      color: 'blue',
       opacity: 0.2,
       bold: true,
       italics: false
     },
     content: [
-      { text: storeInfo.name, style: "header", alignment: "center" },
+      { text: storeInfo.name, style: 'header', alignment: 'center' },
       {
         text:
-          "For All kinds of - Glass, SS, Pipe, Thai Aluminium, False Celling, Accessories",
-        alignment: "center",
+          'For All kinds of - Glass, SS, Pipe, Thai Aluminium, False Celling, Accessories',
+        alignment: 'center',
         fontSize: 8,
         bold: true,
         margin: [0, -4, 0, 0]
       },
       {
-        text: storeInfo.address + " |" + getCompanyPhoneNo(storeInfo),
+        text: storeInfo.address + ' |' + getCompanyPhoneNo(storeInfo),
         fontSize: 10,
         bold: true,
-        alignment: "center"
+        alignment: 'center'
       },
-      { text: "\n" },
+      { text: '\n' },
 
       {
-        text: "Customer Details:\n",
+        text: 'Customer Details:\n',
         bold: true,
         fontSize: 10,
         margin: [0, -5, 0, 0]
@@ -91,93 +88,93 @@ function GENERATE_PDF(data, date = null) {
         columns: [
           {
             ul: [
-              "Name: " + customer.name + ", Phone: " + customer.number,
-              customer.mail && "E-mail: " + customer.mail,
-              "Address: " + customer.address
+              'Name: ' + customer.name + ', Phone: ' + customer.number,
+              customer.mail && 'E-mail: ' + customer.mail,
+              'Address: ' + customer.address
             ]
           },
           {
-            type: "none",
+            type: 'none',
             fontSize: 10,
             margin: [0, -5, 0, 0],
             ul: [
               {
-                text: "Memo No. " + memoNumber,
+                text: 'Memo No. ' + memoNumber,
                 italics: true,
                 fontSize: 12,
                 bold: true,
-                alignment: "right"
+                alignment: 'right'
               },
               {
                 text: date ? `Date: ${date}` : `Date: ${Date().substr(0, 15)}`,
-                alignment: "right"
+                alignment: 'right'
               }
             ]
           }
         ]
       },
 
-      { text: "\n\n" },
+      { text: '\n\n' },
       // Render the fabrication details here
       {
         text: details,
         bold: true
       },
-      { text: "\n" },
+      { text: '\n' },
       {
-        alignment: "right",
-        type: "none",
+        alignment: 'right',
+        type: 'none',
         ul: [
           {
             text:
-              "Bill = " +
-              numeral(parseFloat(customer.bill)).format("0,0.00") +
-              " Taka",
+              'Bill = ' +
+              numeral(parseFloat(customer.bill)).format('0,0.00') +
+              ' Taka',
             italics: true,
             bold: true,
-            color: "blue"
+            color: 'blue'
           },
           {
             text:
-              "Previous Due = " +
+              'Previous Due = ' +
               renderPrevDue(customer.prevDue) +
-              " | Bill With Previous Due = " +
-              numeral(parseFloat(customer.billWithDue)).format("0,0.00") +
-              " Taka",
+              ' | Bill With Previous Due = ' +
+              numeral(parseFloat(customer.billWithDue)).format('0,0.00') +
+              ' Taka',
             italics: true,
             bold: true,
-            color: "red"
+            color: 'red'
           },
           renderAdvance(customer),
           {
-            text: "New Due From Now = " + renderNewDue(customer.newDue),
+            text: 'New Due From Now = ' + renderNewDue(customer.newDue),
             italics: true,
             bold: true,
-            color: "red"
+            color: 'red'
           }
         ]
       },
-      { text: "\n\n" },
+      { text: '\n\n' },
       {
         columns: [
           {
-            type: "none",
+            type: 'none',
             ul: [
               {
-                text: "---------------------------------",
-                alignment: "left"
+                text: '---------------------------------',
+                alignment: 'left'
               },
-              { text: "Receivers Signature", alignment: "left" }
+              { text: 'Receivers Signature', alignment: 'left' }
             ]
           },
           {
-            type: "none",
+            type: 'none',
             ul: [
               {
-                text: "----------------------------------------",
-                alignment: "right"
+                text: '----------------------------------------',
+                alignment: 'right'
               },
-              { text: "For " + storeInfo.name, alignment: "right" }
+              { text: 'For ' + storeInfo.name, alignment: 'right' }
             ]
           }
         ]
@@ -201,7 +198,7 @@ function GENERATE_PDF(data, date = null) {
       tableHeader: {
         bold: true,
         fontSize: 10,
-        color: "black"
+        color: 'black'
       }
     },
     defaultStyle: {
@@ -214,24 +211,24 @@ function GENERATE_PDF(data, date = null) {
   if (date) {
     pdf_name =
       memoNumber +
-      "_" +
-      "[" +
+      '_' +
+      '[' +
       customer.number +
-      "]" +
-      "fabrication_history_memo_" +
+      ']' +
+      'fabrication_history_memo_' +
       customer.name +
-      "_" +
+      '_' +
       Date().substr(0, 15);
   } else {
     pdf_name =
       memoNumber +
-      "_" +
-      "[" +
+      '_' +
+      '[' +
       customer.number +
-      "]" +
-      "fabrication_memo_" +
+      ']' +
+      'fabrication_memo_' +
       customer.name +
-      "_" +
+      '_' +
       Date().substr(0, 15);
   }
   pdfMake.createPdf(docDefinition).download(pdf_name);

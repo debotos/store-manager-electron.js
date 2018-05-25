@@ -19,12 +19,18 @@ db.stock.others = new Datastore({
 });
 
 db.due = new Datastore({ filename: 'due.db', autoload: true });
-db.sells = new Datastore({ filename: 'sells.db', autoload: true });
+db.sellsHistory = new Datastore({
+  filename: 'sellsHistory.db',
+  autoload: true
+});
 db.memo = new Datastore({ filename: 'memo.db', autoload: true });
 db.info = new Datastore({ filename: 'info.db', autoload: true });
 
 db.readyCash = {};
-db.readyCashAmount = new Datastore({ filename: 'readyCashAmount.db', autoload: true });
+db.readyCashAmount = new Datastore({
+  filename: 'readyCashAmount.db',
+  autoload: true
+});
 db.readyCash.income = new Datastore({
   filename: 'readyCash.income.db',
   autoload: true

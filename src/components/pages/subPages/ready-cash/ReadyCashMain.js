@@ -312,7 +312,13 @@ class ReadyCashMain extends Component {
           title={
             <div style={{ color: 'red' }}>
               Are You Sure? You Should Reset It Only After 24 Hour !
-              (Warning...) Genetate The PDF First !
+              (Warning...){' '}
+              <div
+                style={{ textAlign: 'center' }}
+                className="animated infinite tada"
+              >
+                Genetate The PDF First !
+              </div>
             </div>
           }
           onRequestClose={this.handleClose}

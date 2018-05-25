@@ -1,29 +1,30 @@
-import React, { Component } from "react";
-import { Card } from "material-ui/Card";
-import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
-import isEmail from "validator/lib/isEmail";
-import { connect } from "react-redux";
-import Dialog from "material-ui/Dialog";
-import numeral from "numeral";
-import moment from "moment";
-import SvgIcon from "material-ui/SvgIcon";
-import noInternet from "no-internet";
-import AutoComplete from "material-ui/AutoComplete";
+import React, { Component } from 'react';
+import { Card } from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import isEmail from 'validator/lib/isEmail';
+import { connect } from 'react-redux';
+import Dialog from 'material-ui/Dialog';
+import numeral from 'numeral';
+import moment from 'moment';
+import SvgIcon from 'material-ui/SvgIcon';
+import noInternet from 'no-internet';
+import AutoComplete from 'material-ui/AutoComplete';
 
-import GENERATE_PDF from "./PDF";
-import { startIncrementMemoNumber } from "../../../../actions/sells/memo-no-actions";
-import { removeAllSellsItem } from "../../../../actions/sells/sells-actions";
-import { startAddSellUnderCustomerHistory } from "../../../../actions/sells/sells-history-actions";
+import GENERATE_PDF from './PDF';
+import { startIncrementMemoNumber } from '../../../../actions/sells/memo-no-actions';
+import { removeAllSellsItem } from '../../../../actions/sells/sells-actions';
+import { startAddSellUnderCustomerHistory } from '../../../../actions/sells/sells-history-actions';
 import {
   startAddPrevDue,
   startRemovePrevDue
-} from "../../../../actions/sells/prevDue-actions";
-import { removeAllTable } from "../../../../actions/sells/table-actions";
-import { startAddAnEntryToReadyCash } from "../../../../actions/ready-cash/ready-cash-actions";
-import { startRemoveAdvance } from "../../../../actions/advance/advance-actions";
+} from '../../../../actions/sells/prevDue-actions';
+import { removeAllTable } from '../../../../actions/sells/table-actions';
+import { startAddAnEntryToReadyCash } from '../../../../actions/ready-cash/ready-cash-actions';
+import { startRemoveAdvance } from '../../../../actions/advance/advance-actions';
 
-const uuidv4 = require("uuid/v4");
+const uuidv4 = require('uuid/v4');
 
 class CustomerDetailsForm extends Component {
   handleDialogOpen = () => {
@@ -31,15 +32,16 @@ class CustomerDetailsForm extends Component {
   };
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
+    this.handleReset();
     this.props.removeAllSellsItem();
     this.props.removeAllTable();
   };
   handleReset = () => {
-    this.setState({ name: "" });
-    this.setState({ number: "" });
-    this.setState({ mail: "" });
-    this.setState({ deposit: "" });
-    this.setState({ address: "" });
+    this.setState({ name: '' });
+    this.setState({ number: '' });
+    this.setState({ mail: '' });
+    this.setState({ deposit: '' });
+    this.setState({ address: '' });
   };
   handleName = event => {
     const name = event.target.value;
@@ -72,7 +74,7 @@ class CustomerDetailsForm extends Component {
     let prevDue = 0;
     this.props.due.forEach(singleItem => {
       if (singleItem.number.toString() === searchingFor.toString()) {
-        console.log("Existing user");
+        // console.log('Existing user');
         flag = true;
         prevDue = singleItem.amount;
       }
@@ -100,8 +102,8 @@ class CustomerDetailsForm extends Component {
     if (info) {
       this.props.showSnackBar(
         `Found Due ${numeral(parseFloat(amount)).format(
-          "0,0.00"
-        )} Taka & Advance ${numeral(parseFloat(advance)).format("0,0.00")} Taka`
+          '0,0.00'
+        )} Taka & Advance ${numeral(parseFloat(advance)).format('0,0.00')} Taka`
       );
       this.setState({ name: info.name });
       this.setState({ number: info.number });
@@ -113,46 +115,58 @@ class CustomerDetailsForm extends Component {
     super(props);
     this.state = {
       dialogOpen: false,
-      name: "",
-      number: "",
-      mail: "",
-      address: "",
-      deposit: "",
+      name: '',
+      number: '',
+      mail: '',
+      address: '',
+      deposit: '',
       allTotal: this.props.allTotal,
-      modelData: "",
+      modelData: '',
       dataSource: this.props.due.map(singleItem => {
         return singleItem.number;
       })
     };
   }
-  collectSellsData = () => ({
-    number: this.state.number,
-    history: {
-      id: uuidv4(),
-      items: this.props.sellsTables,
-      memoNumber: this.props.memoNumber,
-      allTotal: this.props.allTotal,
-      customer: {
-        name: this.state.name,
-        number: this.state.number,
-        mail: this.state.mail,
-        deposit: this.state.deposit,
-        advance: this.userHaveAdvance()[1],
-        prevDue: parseFloat(this.userAlreadyExists()[1]).toFixed(2),
-        totalWithDue: parseFloat(
-          parseFloat(this.props.allTotal.finalTotal) +
+  collectSellsData = () => {
+    let allTotalWithPrevDue =
+      parseFloat(this.props.allTotal.finalTotal) +
+      parseFloat(this.userAlreadyExists()[1]);
+    let depositWithAdvance =
+      parseFloat(this.userHaveAdvance()[1]) + parseFloat(this.state.deposit);
+    let deposit = parseFloat(this.state.deposit).toFixed(2);
+    let newDue = (allTotalWithPrevDue - parseFloat(depositWithAdvance)).toFixed(
+      2
+    );
+    return {
+      number: this.state.number,
+      history: {
+        id: uuidv4(),
+        items: this.props.sellsTables,
+        memoNumber: this.props.memoNumber,
+        allTotal: this.props.allTotal,
+        customer: {
+          name: this.state.name,
+          number: this.state.number,
+          mail: this.state.mail,
+          deposit: this.state.deposit,
+          advance: this.userHaveAdvance()[1],
+          prevDue: parseFloat(this.userAlreadyExists()[1]).toFixed(2),
+          newDue,
+          totalWithDue: parseFloat(
+            parseFloat(this.props.allTotal.finalTotal) +
+              parseFloat(this.userAlreadyExists()[1])
+          ).toFixed(2),
+          address: this.state.address,
+          depositWithAdvance:
+            parseFloat(this.userHaveAdvance()[1]) +
+            parseFloat(this.state.deposit),
+          allTotalWithPrevDue:
+            parseFloat(this.props.allTotal.finalTotal) +
             parseFloat(this.userAlreadyExists()[1])
-        ).toFixed(2),
-        address: this.state.address,
-        depositWithAdvance:
-          parseFloat(this.userHaveAdvance()[1]) +
-          parseFloat(this.state.deposit),
-        allTotalWithPrevDue:
-          parseFloat(this.props.allTotal.finalTotal) +
-          parseFloat(this.userAlreadyExists()[1])
+        }
       }
-    }
-  });
+    };
+  };
   userHaveAdvance = () => {
     const searchingFor = this.state.number;
     let flag = false;
@@ -161,7 +175,7 @@ class CustomerDetailsForm extends Component {
     let obj;
     this.props.advance.forEach(singleItem => {
       if (singleItem.note.toString() === searchingFor.toString()) {
-        console.log("User Have Advance.");
+        console.log('User Have Advance.');
         flag = true;
         id = singleItem.id;
         obj = singleItem;
@@ -232,22 +246,20 @@ class CustomerDetailsForm extends Component {
       memoNumber: this.props.memoNumber,
       storeInfo: this.props.storeInfo
     };
-    GENERATE_PDF(dataForPDF);
 
     const dataForReadyCash = {
-      type: "income",
+      type: 'income',
       moment: moment().valueOf(),
       amount: deposit,
-      category: "sell",
+      category: 'sell',
       number: this.state.number,
       address: this.state.address,
       name: this.state.name,
       mail: this.state.mail,
       memoNumber: this.props.memoNumber
     };
+    GENERATE_PDF(dataForPDF);
     this.props.startAddAnEntryToReadyCash(dataForReadyCash);
-
-    this.handleReset();
     this.props.startIncrementMemoNumber();
     // } else {
     //   this.props.showSnackBar(
@@ -258,24 +270,20 @@ class CustomerDetailsForm extends Component {
     // }
   };
   //End Final Work
-  handleSaveAndGeneratePDF = () => {
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.props.showSnackBar("Failed ! No Internet Connection !");
+  handleSaveAndGeneratePDF = e => {
+    e.preventDefault();
+    console.log('handleSaveAndGeneratePDF() called !');
+    if (this.state.mail) {
+      if (isEmail(this.state.mail)) {
+        // console.log('FinalWork() called[mail]............');
+        this.finalWork();
       } else {
-        // internet have
-        if (this.state.mail) {
-          if (isEmail(this.state.mail)) {
-            this.finalWork();
-          } else {
-            this.props.showSnackBar("Error ! Invalid Email !");
-          }
-        } else {
-          this.finalWork();
-        }
+        this.props.showSnackBar('Error ! Invalid Email !');
       }
-    });
+    } else {
+      // console.log('FinalWork() called[without mail]............');
+      this.finalWork();
+    }
   };
   showModelData = modelData => {
     const {
@@ -289,35 +297,35 @@ class CustomerDetailsForm extends Component {
 
     return (
       <div>
-        All Table Total: {numeral(parseFloat(allTotal)).format("0,0.00")}
+        All Table Total: {numeral(parseFloat(allTotal)).format('0,0.00')}
         <br />
         <strong>Previous Due: </strong>
-        <b style={{ color: "red" }}>
+        <b style={{ color: 'red' }}>
           {parseFloat(prevDue).toFixed(2) === parseFloat(0).toFixed(2)
-            ? "No Previous Due"
-            : numeral(parseFloat(prevDue)).format("0,0.00")}
+            ? 'No Previous Due'
+            : numeral(parseFloat(prevDue)).format('0,0.00')}
         </b>
         <br />
-        All Total + Previous Due:{" "}
-        {numeral(parseFloat(totalWithDue)).format("0,0.00")}
+        All Total + Previous Due:{' '}
+        {numeral(parseFloat(totalWithDue)).format('0,0.00')}
         <br />
         <strong>Advance: </strong>
-        <b style={{ color: "green" }}>
+        <b style={{ color: 'green' }}>
           {parseFloat(advance).toFixed(2) === parseFloat(0).toFixed(2)
-            ? "No Previous Advance"
-            : numeral(parseFloat(advance)).format("0,0.00")}
+            ? 'No Previous Advance'
+            : numeral(parseFloat(advance)).format('0,0.00')}
         </b>
         <br />
-        Deposit Now: {numeral(parseFloat(depositNow)).format("0,0.00")}
+        Deposit Now: {numeral(parseFloat(depositNow)).format('0,0.00')}
         <br />
-        Deposit Now + Previous Advance:{" "}
-        {numeral(parseFloat(depositNow) + parseFloat(advance)).format("0,0.00")}
+        Deposit Now + Previous Advance:{' '}
+        {numeral(parseFloat(depositNow) + parseFloat(advance)).format('0,0.00')}
         <br />
         <strong>New Due From Now: </strong>
-        <b style={{ color: "red" }}>
+        <b style={{ color: 'red' }}>
           {parseFloat(newDue).toFixed(2) === parseFloat(0).toFixed(2)
-            ? "No Due"
-            : numeral(parseFloat(newDue)).format("0,0.00")}
+            ? 'No Due'
+            : numeral(parseFloat(newDue)).format('0,0.00')}
         </b>
         <br />
       </div>
@@ -337,10 +345,10 @@ class CustomerDetailsForm extends Component {
           <Card
             style={{
               padding: 40,
-              backgroundColor: "#CFD8DC"
+              backgroundColor: '#CFD8DC'
             }}
           >
-            <h4 style={{ textAlign: "center" }}>
+            <h4 style={{ textAlign: 'center' }}>
               <b>Input Customer Details :</b>
             </h4>
             {/* All Fields */}
@@ -396,8 +404,8 @@ class CustomerDetailsForm extends Component {
               label="Reset"
               onClick={this.handleReset}
             />
-            <FlatButton
-              className="animated infinite tada"
+            <RaisedButton
+              className="animated tada"
               disabled={
                 this.state.name &&
                 this.state.number &&

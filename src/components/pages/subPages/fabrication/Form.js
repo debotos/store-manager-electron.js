@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import isEmail from 'validator/lib/isEmail';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
@@ -27,6 +28,7 @@ class Form extends Component {
   };
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
+    this.handleReset();
   };
   // End
   handleReset = () => {
@@ -153,31 +155,17 @@ class Form extends Component {
     return [flag, prevAdvance, id, obj];
   };
 
-  handleSaveAndGeneratePDF = () => {
+  handleSaveAndGeneratePDF = e => {
+    e.preventDefault();
     if (this.state.mail) {
       if (isEmail(this.state.mail)) {
-        noInternet().then(offline => {
-          if (offline) {
-            // no internet
-            this.props.showSnackBar('Failed ! No Internet Connection !');
-          } else {
-            // internet have
-            this.finalWork();
-          }
-        });
+        this.finalWork();
       } else {
         this.props.showSnackBar('Error ! Invalid Email !');
       }
     } else {
       // No email provided
-      noInternet().then(offline => {
-        if (offline) {
-          // no internet
-          this.props.showSnackBar('Failed ! No Internet Connection !');
-        } else {
-          this.finalWork();
-        }
-      });
+      this.finalWork();
     }
   };
   handleUpdateInput = value => {
@@ -297,7 +285,6 @@ class Form extends Component {
     };
 
     this.props.startAddAnEntryToReadyCash(dataForReadyCash);
-    this.handleReset();
     this.props.startIncrementMemoNumber();
     // } else {
     //   this.props.showSnackBar(
@@ -391,8 +378,8 @@ class Form extends Component {
           />
           <br />
           <div style={{ textAlign: 'center' }}>
-            <FlatButton
-              className="animated infinite tada"
+            <RaisedButton
+              className="animated tada"
               disabled={
                 this.state.name &&
                 this.state.number &&

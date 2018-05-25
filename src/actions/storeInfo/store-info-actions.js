@@ -26,14 +26,14 @@ export const startUpdateStoreInfo = storeInfo => {
         }
       });
     }).then(count => {
-      console.log('Got the Doc Amount => ', count);
+      // console.log('Got the Doc Amount => ', count);
       if (count === 0) {
         return new Promise(function(resolve, reject) {
           db['info'].insert(doc, function(err, newDoc) {
             if (err) {
               reject(err);
             } else {
-              console.log('Info Added!');
+              // console.log('Info Added!');
               resolve(newDoc);
             }
           });
@@ -47,12 +47,12 @@ export const startUpdateStoreInfo = storeInfo => {
             if (err) {
               reject(err);
             } else {
-              console.log('Info Deleted!');
+              // console.log('Info Deleted!');
               resolve(numRemoved);
             }
           });
         }).then(numRemoved => {
-          console.log('Existing Info Deleted. Update is processing...');
+          // console.log('Existing Info Deleted. Update is processing...');
           return new Promise(function(resolve, reject) {
             db['info'].insert(doc, function(err, newDoc) {
               if (err) {
@@ -73,7 +73,7 @@ export const startUpdateStoreInfo = storeInfo => {
 };
 
 export const setStoreInfo = data => {
-  console.log(data);
+  // console.log(data);
   return {
     type: SET_STORE_INFO,
     data
@@ -91,7 +91,6 @@ export const startSetStoreInfo = () => {
         }
       });
     }).then(docs => {
-      console.log(docs);
       if (docs.length === 0) {
         docs[0] = {
           name: 'Set Your Store NAME',

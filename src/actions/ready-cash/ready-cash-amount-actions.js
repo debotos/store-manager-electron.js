@@ -60,8 +60,8 @@ export const startOverrideReadyCash = amount => {
             }
           );
         }).then(numReplaced => {
-          console.log('ReadyCashAmount OverrideUpdate no => ', numReplaced);
-          console.log('ReadyCashAmount OverrideUpdated with data => ', data);
+          // console.log('ReadyCashAmount OverrideUpdate no => ', numReplaced);
+          // console.log('ReadyCashAmount OverrideUpdated with data => ', data);
           dispatch(overrideReadyCash(readyCashDoc._id, data.amount));
         });
       }
@@ -131,8 +131,8 @@ export const startUpdateReadyCash = amount => {
             }
           );
         }).then(numReplaced => {
-          console.log('ReadyCashAmount Update no => ', numReplaced);
-          console.log('ReadyCashAmount Updated with data => ', data);
+          // console.log('ReadyCashAmount Update no => ', numReplaced);
+          // console.log('ReadyCashAmount Updated with data => ', data);
           dispatch(updateReadyCash(readyCashDoc._id, data.amount));
         });
       }
@@ -160,11 +160,11 @@ export const startSetReadyCashAmount = () => {
       readyCashAmountDoc = readyCashAmountDoc.map(
         singleItem => (singleItem = { id: singleItem._id, ...singleItem })
       );
-      console.log('Got readyCashAmountDoc => ', readyCashAmountDoc);
+      // console.log('Got readyCashAmountDoc => ', readyCashAmountDoc);
       if (readyCashAmountDoc.length > 0) {
         readyCashAmoumt = { ...readyCashAmountDoc[0] };
       }
-      console.log('Setting up ReadyCashAmount with =>', readyCashAmoumt);
+      // console.log('Setting up ReadyCashAmount with =>', readyCashAmoumt);
       dispatch(setReadyCashAmount(readyCashAmoumt));
     });
   };

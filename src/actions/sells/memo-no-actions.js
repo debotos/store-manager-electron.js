@@ -12,7 +12,9 @@ export const incrementMemoNumber = (id, memoNumber) => {
 };
 
 export const startIncrementMemoNumber = () => {
-  let memoDoc;
+  // console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+  // console.log('startIncrementMemoNumber() got call ! ');
+  // console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
   return (dispatch, getState) => {
     return new Promise(function(resolve, reject) {
       db['memo'].find({}, function(err, memoDoc) {
@@ -24,27 +26,7 @@ export const startIncrementMemoNumber = () => {
       });
     }).then(memoDoc => {
       let data;
-      if (memoDoc.length > 0) {
-        memoDoc = memoDoc[0];
-        let value = parseInt(memoDoc.memoNumber, 10) + 1;
-        data = {
-          memoNumber: value
-        };
-        // Update Doc
-        return new Promise(function(resolve, reject) {
-          db['memo'].update(memoDoc[0], data, {}, function(err, numReplaced) {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(numReplaced);
-            }
-          });
-        }).then(numReplaced => {
-          console.log('memo Update no => ', numReplaced);
-          console.log('memo Updated with data => ', data);
-          dispatch(incrementMemoNumber(memoDoc._id, data.memoNumber));
-        });
-      } else {
+      if (memoDoc.length === 0) {
         // Insert Doc
         data = {
           memoNumber: 2
@@ -59,6 +41,32 @@ export const startIncrementMemoNumber = () => {
           });
         }).then(newDoc => {
           dispatch(incrementMemoNumber(newDoc._id, newDoc.memoNumber));
+        });
+      } else {
+        let requireMemoDoc = memoDoc[0];
+        // console.log('------------------------------------');
+        // console.log('Memo Doc is going to update => ', requireMemoDoc);
+        // console.log('------------------------------------');
+        let value = parseInt(requireMemoDoc.memoNumber, 10) + 1;
+        data = {
+          memoNumber: value
+        };
+        // Update Doc
+        return new Promise(function(resolve, reject) {
+          db['memo'].update(requireMemoDoc, data, {}, function(
+            err,
+            numReplaced
+          ) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(numReplaced);
+            }
+          });
+        }).then(numReplaced => {
+          // console.log('memo Update no => ', numReplaced);
+          // console.log('memo Updated with data => ', data);
+          dispatch(incrementMemoNumber(requireMemoDoc._id, data.memoNumber));
         });
       }
     });
@@ -85,11 +93,11 @@ export const startSetMemoNumber = () => {
       memoDoc = memoDoc.map(
         singleItem => (singleItem = { id: singleItem._id, ...singleItem })
       );
-      console.log('Got memoDoc => ', memoDoc);
+      // console.log('Got memoDoc => ', memoDoc);
       if (memoDoc.length > 0) {
         memoNoDoc = { ...memoDoc[0] };
       }
-      console.log('Setting up memo with =>', memoDoc);
+      // console.log('Setting up memo with =>', memoDoc);
       dispatch(setMemoNumber(memoNoDoc));
     });
   };

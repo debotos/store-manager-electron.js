@@ -4,7 +4,6 @@ import {
   RESET_READY_CASH,
   REMOVE_AN_ENTRY_FROM_READY_CASH
 } from '../constants';
-import expenses from '../../components/pages/subPages/expenses/utility-func/expenses';
 import db from '../../secrets/neDB';
 
 export const removeAnEntryToReadyCash = (id, type_of) => {
@@ -70,7 +69,7 @@ export const startResetReadyCash = () => {
         }
       });
     }).then(numRemoved => {
-      console.log('Ready Cash Income Doc removed Items => ', numRemoved);
+      // console.log('Ready Cash Income Doc removed Items => ', numRemoved);
       return new Promise(function(resolve, reject) {
         db.readyCash['expenses'].remove({}, { multi: true }, function(
           err,
@@ -83,7 +82,7 @@ export const startResetReadyCash = () => {
           }
         });
       }).then(numRemoved => {
-        console.log('Ready Cash Expenses Doc removed Items => ', numRemoved);
+        // console.log('Ready Cash Expenses Doc removed Items => ', numRemoved);
         dispatch(resetReadyCash());
       });
     });
@@ -110,7 +109,7 @@ export const startSetReadyCash = () => {
       income = income.map(singleItem => {
         return (singleItem = { id: singleItem._id, ...singleItem });
       });
-      console.log('Got ready cash income => ', income);
+      // console.log('Got ready cash income => ', income);
       readyCash['income'] = income;
       return new Promise(function(resolve, reject) {
         db.readyCash['expenses'].find({}, function(err, expenses) {
@@ -124,7 +123,7 @@ export const startSetReadyCash = () => {
         expenses = expenses.map(singleItem => {
           return (singleItem = { id: singleItem._id, ...singleItem });
         });
-        console.log('Got ready cash expenses => ', expenses);
+        // console.log('Got ready cash expenses => ', expenses);
         readyCash['expenses'] = expenses;
         dispatch(setReadyCash(readyCash));
       });

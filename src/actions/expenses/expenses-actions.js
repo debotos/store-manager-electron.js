@@ -76,7 +76,7 @@ export const startEditExpense = (id, updates) => {
         }
       });
     }).then(doc => {
-      console.log('You are trying to update this doc => ', doc);
+      // console.log('You are trying to update this doc => ', doc);
 
       return new Promise(function(resolve, reject) {
         db.expenses.update(doc, updates, {}, function(err, numReplaced) {
@@ -87,8 +87,8 @@ export const startEditExpense = (id, updates) => {
           }
         });
       }).then(numReplaced => {
-        console.log('Expense update no => ', numReplaced);
-        console.log('Expense update with data => ', updates);
+        // console.log('Expense update no => ', numReplaced);
+        // console.log('Expense update with data => ', updates);
         dispatch(editExpense(id, updates));
       });
     });
@@ -115,7 +115,7 @@ export const startSetExpenses = () => {
       expensesDoc = expensesDoc.map(
         singleItem => (singleItem = { id: singleItem._id, ...singleItem })
       );
-      console.log('Got Expense Docs => ', expensesDoc);
+      // console.log('Got Expense Docs => ', expensesDoc);
       dispatch(setExpenses(expensesDoc));
     });
   };

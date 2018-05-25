@@ -76,7 +76,7 @@ export const startEditAdvance = (id, updates) => {
         }
       });
     }).then(doc => {
-      console.log('You are trying to update this doc => ', doc);
+      // console.log('You are trying to update this doc => ', doc);
 
       return new Promise(function(resolve, reject) {
         db.advances.update(doc, updates, {}, function(err, numReplaced) {
@@ -87,8 +87,8 @@ export const startEditAdvance = (id, updates) => {
           }
         });
       }).then(numReplaced => {
-        console.log('Advance update no => ', numReplaced);
-        console.log('Advance update with data => ', updates);
+        // console.log('Advance update no => ', numReplaced);
+        // console.log('Advance update with data => ', updates);
         dispatch(editAdvance(id, updates));
       });
     });
@@ -115,7 +115,7 @@ export const startSetAdvances = () => {
       advancesDoc = advancesDoc.map(
         singleItem => (singleItem = { id: singleItem._id, ...singleItem })
       );
-      console.log('Got Advance Docs => ', advancesDoc);
+      // console.log('Got Advance Docs => ', advancesDoc);
       dispatch(setAdvances(advancesDoc));
     });
   };

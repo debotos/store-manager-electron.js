@@ -89,7 +89,7 @@ export const startUpdateStockItem = (id, data) => {
         }
       });
     }).then(doc => {
-      console.log('You are trying to update this doc => ', doc);
+      // console.log('You are trying to update this doc => ', doc);
 
       return new Promise(function(resolve, reject) {
         db.stock[data.productCategoryToSell].update(doc, data, {}, function(
@@ -103,8 +103,8 @@ export const startUpdateStockItem = (id, data) => {
           }
         });
       }).then(numReplaced => {
-        console.log('Stock update no => ', numReplaced);
-        console.log('Stock update with data => ', data);
+        // console.log('Stock update no => ', numReplaced);
+        // console.log('Stock update with data => ', data);
         dispatch(updateStockItem(id, data));
       });
     });
@@ -119,7 +119,7 @@ export const setStock = data => ({
 });
 
 export const startSetStock = () => {
-  console.log('startSetStock() got called!');
+  // console.log('startSetStock() got called!');
   return (dispatch, getState) => {
     const stockData = {
       aluminium: [],
@@ -136,7 +136,7 @@ export const startSetStock = () => {
         }
       });
     }).then(aluminiumDocs => {
-      console.log('Got aluminium in stock => ', aluminiumDocs);
+      // console.log('Got aluminium in stock => ', aluminiumDocs);
       stockData.aluminium = aluminiumDocs.map(singleItem => {
         return (singleItem = { id: singleItem._id, ...singleItem });
       }); // Aluminium Doc Set
@@ -150,7 +150,7 @@ export const startSetStock = () => {
           }
         });
       }).then(glassDocs => {
-        console.log('Got glass in stock => ', glassDocs);
+        // console.log('Got glass in stock => ', glassDocs);
         stockData.glass = glassDocs.map(singleItem => {
           return (singleItem = { id: singleItem._id, ...singleItem });
         }); // Glass Doc Set
@@ -164,7 +164,7 @@ export const startSetStock = () => {
             }
           });
         }).then(ssDocs => {
-          console.log('Got ss in stock => ', ssDocs);
+          // console.log('Got ss in stock => ', ssDocs);
           stockData.ss = ssDocs.map(singleItem => {
             return (singleItem = { id: singleItem._id, ...singleItem });
           }); // SS Doc Set
@@ -178,11 +178,11 @@ export const startSetStock = () => {
               }
             });
           }).then(othersDocs => {
-            console.log('Got others in stock => ', othersDocs);
+            // console.log('Got others in stock => ', othersDocs);
             stockData.others = othersDocs.map(singleItem => {
               return (singleItem = { id: singleItem._id, ...singleItem });
             }); // Others Doc Set
-            console.log('Setting up stock with => ', stockData);
+            // console.log('Setting up stock with => ', stockData);
             dispatch(setStock(stockData));
           });
         });
