@@ -14,7 +14,6 @@ export const addIncome = income => ({
 
 export const startAddIncome = (incomeData = {}) => {
   return (dispatch, getState) => {
-    const uid = getState().auth.uid;
     const {
       description = '',
       note = '',

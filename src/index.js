@@ -9,7 +9,7 @@ import './style/style.css';
 
 import registerServiceWorker from './registerServiceWorker';
 
-import db from './secrets/neDB';
+// import db from './secrets/neDB';
 import MainRouter from './components/Router';
 import configureStore from './store/configureStore';
 

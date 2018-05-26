@@ -1,11 +1,12 @@
-import React, { Component } from "react";
-import AppBarMain from "../ui-element/AppBarMain";
-import "../../style/pad/pad.css";
-import RaisedButton from "material-ui/RaisedButton";
-import { Card } from "material-ui/Card";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import AppBarMain from '../ui-element/AppBarMain';
+import '../../style/pad/pad.css';
+import RaisedButton from 'material-ui/RaisedButton';
+import { Card } from 'material-ui/Card';
+import { connect } from 'react-redux';
 // import Navigation from "../Navigation";
-var PrintTemplate = require("react-print");
+// import TableClock from '../clock/TableClock';
+var PrintTemplate = require('react-print');
 
 class Pad extends Component {
   print = () => {
@@ -14,7 +15,7 @@ class Pad extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      note: ""
+      note: ''
     };
   }
 
@@ -26,42 +27,31 @@ class Pad extends Component {
     return (
       <div className="background">
         <div id="react-no-print">
-          <AppBarMain title={"Your Pad"} />
+          <AppBarMain title={'Your Pad'} />
           <div className="container">
-            <Card
-              className="animated infinite swing"
+            <div
               style={{
-                borderRadius: "20px",
-                marginTop: 10,
-                padding: 5,
-                backgroundColor: "lightblue"
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
-              <div style={{ textAlign: "center", pointerEvents: "none" }}>
-                <strong>PAD</strong>
-                <br />
-                <iframe
-                  src="https://free.timeanddate.com/clock/i61ddbap/n942/fn3/fs28/tcadd8e6/pcadd8e6/tt0/tw0/tm3/ts1/tb2"
-                  frameBorder="0"
-                  width="320"
-                  height="34"
-                  title="Pad Page Date"
-                />
-              </div>
-            </Card>
+              <h1 id="title-heading"> PAD</h1>
+              {/* <TableClock /> */}
+            </div>
           </div>
           <div style={{ marginTop: 10 }} className="container">
             <Card
               className="animated flip"
               style={{
                 padding: 15,
-                borderRadius: "20px",
-                backgroundColor: "lightblue"
+                borderRadius: '20px',
+                backgroundColor: 'lightblue'
               }}
             >
               <textarea
                 style={{
-                  borderRadius: "20px"
+                  borderRadius: '20px'
                 }}
                 className="textarea"
                 placeholder="Add your note "
@@ -70,7 +60,7 @@ class Pad extends Component {
               />
             </Card>
           </div>
-          <div style={{ textAlign: "center", marginTop: 10 }}>
+          <div style={{ textAlign: 'center', marginTop: 10 }}>
             <RaisedButton
               className="animated infinite tada"
               primary={true}
@@ -83,10 +73,10 @@ class Pad extends Component {
         <div id="print-mount">
           <PrintTemplate>
             <div>
-              <h1 style={{ textAlign: "center" }}>
+              <h1 style={{ textAlign: 'center' }}>
                 {this.props.storeInfo.name}
               </h1>
-              <h3 style={{ textAlign: "center" }}>PAD</h3>
+              <h3 style={{ textAlign: 'center' }}>PAD</h3>
               <div className="header">
                 <div>
                   {/* Left part */}
@@ -107,16 +97,16 @@ class Pad extends Component {
                   <br />
                   {this.props.storeInfo.address.substr(29, 36)}
                   <br />
-                  phone numbers:{" " + this.props.storeInfo.number1 + ","}
+                  phone numbers:{' ' + this.props.storeInfo.number1 + ','}
                   <br />
                   {this.props.storeInfo.number2 +
-                    ", " +
+                    ', ' +
                     this.props.storeInfo.number3}
                 </div>
               </div>
               <hr />
               <br />
-              <div className="content" style={{ fontSize: "x-large" }}>
+              <div className="content" style={{ fontSize: 'x-large' }}>
                 {this.state.note}
               </div>
             </div>

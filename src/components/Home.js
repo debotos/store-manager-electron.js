@@ -12,6 +12,9 @@ import Toggle from 'material-ui/Toggle';
 import { startUpdateStoreInfo } from '../actions/storeInfo/store-info-actions';
 import SnackBar from './ui-element/SnackBar';
 
+import HomeDate from './clock/HomeDate';
+// import WallClock from './clock/WallClock';
+import TableClock from './clock/TableClock';
 const styles = {
   wrapper: {
     display: 'flex',
@@ -121,39 +124,25 @@ class Home extends Component {
       <div>
         <AppBarMain />
         <div className="animated bounceInUp">
-          <div className="container" style={{ marginTop: 5, marginBottom: 0 }}>
-            <div
-              className="analog-clock"
-              style={{
-                textAlign: 'center',
-                justifyContent: 'center',
-                padding: 5
-              }}
-            >
-              <iframe
-                src="https://free.timeanddate.com/clock/i614dqhc/n942/fn4/fs22/ftb/tt1"
-                frameBorder="0"
-                width="308"
-                height="28"
-                title="date"
-              />
+          <div
+            className="container"
+            style={{ marginTop: '20px', marginBottom: 0 }}
+          >
+            <div className="analog-clock">
+              <div
+                style={{
+                  textAlign: 'center',
+                  justifyContent: 'center',
+                  paddingLeft: '50px'
+                }}
+              >
+                <TableClock />
+                {/* <WallClock /> */}
+              </div>
               <br />
-              <iframe
-                src="https://free.timeanddate.com/clock/i614crkr/n942/szw270/szh270/hoc222/hbw6/cf100/hgr0/hcw2/hcd88/fan2/fas20/fdi70/mqc000/mqs3/mql13/mqw4/mqd94/mhc000/mhs3/mhl13/mhw4/mhd94/mmc000/mml5/mmw1/mmd94/hwm2/hhs2/hhb18/hms2/hml80/hmb18/hmr7/hscf09/hss1/hsl90/hsr5"
-                frameBorder="0"
-                width="270"
-                height="270"
-                title="Analog Clock"
-              />
-              <br />
-              <iframe
-                src="https://free.timeanddate.com/clock/i614dbru/n942/fn3/fs48/tct/pct/ftb/th2"
-                frameBorder="0"
-                width="325"
-                height="57"
-                allowtransparency="true"
-                title="Digital Clock"
-              />
+              <div className="backgroundinfo">
+                <HomeDate />
+              </div>
             </div>
             <h1 id="store-name" style={{ textAlign: 'center' }}>
               Store Management Software

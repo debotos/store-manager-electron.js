@@ -9,7 +9,7 @@ import Dialog from 'material-ui/Dialog';
 import numeral from 'numeral';
 import moment from 'moment';
 import SvgIcon from 'material-ui/SvgIcon';
-import noInternet from 'no-internet';
+// import noInternet from 'no-internet';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import GENERATE_PDF from './PDF';
@@ -133,7 +133,7 @@ class CustomerDetailsForm extends Component {
       parseFloat(this.userAlreadyExists()[1]);
     let depositWithAdvance =
       parseFloat(this.userHaveAdvance()[1]) + parseFloat(this.state.deposit);
-    let deposit = parseFloat(this.state.deposit).toFixed(2);
+    // let deposit = parseFloat(this.state.deposit).toFixed(2);
     let newDue = (allTotalWithPrevDue - parseFloat(depositWithAdvance)).toFixed(
       2
     );

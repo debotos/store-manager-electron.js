@@ -179,7 +179,7 @@ class ReadyCashMain extends Component {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
               flexWrap: 'wrap'
             }}
           >
@@ -193,6 +193,7 @@ class ReadyCashMain extends Component {
                   &#x9f3;
                 </strong>
                 <Toggle
+                  style={{ paddingLeft: '65px' }}
                   onToggle={this.handleShowEditReadyCash}
                   defaultToggled={this.state.showEditReadyCash}
                 />
@@ -218,15 +219,6 @@ class ReadyCashMain extends Component {
                   </div>
                 )}
               </div>
-            </div>
-            <div>
-              <iframe
-                src="https://free.timeanddate.com/clock/i61f8k1p/n942/fn14/ftb/tt0/tw1/tm3/tb2"
-                frameBorder="0"
-                width="192"
-                height="18"
-                title="Ready Cash Clock"
-              />
             </div>
           </div>
         </Card>
