@@ -151,5 +151,16 @@ export default props => (
         Advance
       </Link>
     </MenuItem>
+
+    <MenuItem
+      onClick={() => {
+        props.handleClose();
+        history.push('/backup');
+      }}
+    >
+      <Link style={styles.link} to="/backup">
+        Backup
+      </Link>
+    </MenuItem>
   </div>
 );

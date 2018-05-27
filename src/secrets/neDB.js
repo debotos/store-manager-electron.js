@@ -1,6 +1,21 @@
 // Database
 var Datastore = require('nedb');
 
+// const app = window.require('electron').remote.app;
+// var fs = window.require('fs');
+// var path = window.require('path');
+
+// var homePath = app.getPath('home');
+// console.log('++++++++++++++++++++++++++++++++');
+// console.log(homePath);
+// console.log('++++++++++++++++++++++++++++++++');
+
+// let DBPATH = homePath + '/Database';
+
+// if (!fs.existsSync(DBPATH)) {
+//   fs.mkdirSync(DBPATH);
+// }
+
 var db = {};
 
 db.stock = {};

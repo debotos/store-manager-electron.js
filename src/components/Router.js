@@ -14,6 +14,7 @@ import ReadyCash from './pages/ReadyCash';
 import Sell from './pages/Sells';
 import Stock from './pages/Stock';
 import Advance from './pages/Advance';
+import Backup from './pages/Backup';
 import Home from './Home';
 
 export const history = createHashHistory();
@@ -38,6 +39,7 @@ class MainRouter extends Component {
             <Route path="/pad" component={Pad} exact={true} />
             <Route path="/stock" component={Stock} exact={true} />
             <Route path="/advance" component={Advance} exact={true} />
+            <Route path="/backup" component={Backup} exact={true} />
             <Route path="/" component={Home} exact={true} />
           </Switch>
         </div>

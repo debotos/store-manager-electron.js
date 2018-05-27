@@ -11,6 +11,8 @@ import MenuItems from './MenuItems';
 import ActionInfoOutline from 'material-ui/svg-icons/action/info-outline';
 import 'font-awesome/css/font-awesome.min.css';
 
+// const { shell } = window.require('electron');
+
 class AppBarMain extends React.Component {
   renderAbout = () => {
     return (
@@ -27,10 +29,14 @@ class AppBarMain extends React.Component {
           </h2>
         </div>
         <div className="profile-social">
-          <ul>
-            <li>
+          {/* <ul>
+            <li
+              onClick={() =>
+                shell.openExternal('https://www.linkedin.com/in/debotos-das')
+              }
+            >
               <a
-                href="https://www.linkedin.com/in/debotos-das"
+                href="javascript:void(0);"
                 data-toggle="tooltip"
                 title="Linked In"
                 target="_blank"
@@ -38,9 +44,13 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-linkedin" />
               </a>
             </li>
-            <li>
+            <li
+              onClick={() =>
+                shell.openExternal('https://www.facebook.com/spark.deb.33')
+              }
+            >
               <a
-                href="https://www.facebook.com/spark.deb.33"
+                href="javascript:void(0);"
                 data-toggle="tooltip"
                 title="Facebook Profile"
                 target="_blank"
@@ -48,9 +58,11 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-facebook" />
               </a>
             </li>
-            <li>
+            <li
+              onClick={() => shell.openExternal('https://twitter.com/debotos')}
+            >
               <a
-                href="https://twitter.com/debotos"
+                href="javascript:void(0);"
                 data-toggle="tooltip"
                 title="Twitter Profile"
                 target="_blank"
@@ -58,9 +70,15 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-twitter" />
               </a>
             </li>
-            <li>
+            <li
+              onClick={() =>
+                shell.openExternal(
+                  'https://plus.google.com/u/0/106300308166515392147'
+                )
+              }
+            >
               <a
-                href="https://plus.google.com/u/0/106300308166515392147"
+                href="javascript:void(0);"
                 data-toggle="tooltip"
                 title="Google+ profile"
                 target="_blank"
@@ -68,9 +86,11 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-google-plus" />
               </a>
             </li>
-            <li>
+            <li
+              onClick={() => shell.openExternal('https://github.com/debotos')}
+            >
               <a
-                href="https://github.com/debotos"
+                href="javascript:void(0);"
                 data-toggle="tooltip"
                 title="github"
                 target="_blank"
@@ -78,9 +98,11 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-github" />
               </a>
             </li>
-            <li>
+            <li
+              onClick={() => shell.openExternal('https://codepen.io/debotos')}
+            >
               <a
-                href="https://codepen.io/debotos"
+                href="javascript:void(0);"
                 data-toggle="tooltip"
                 title="Codepen"
                 target="_blank"
@@ -88,7 +110,7 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-codepen" />
               </a>
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
     );
@@ -114,7 +136,6 @@ class AppBarMain extends React.Component {
   // }
 
   handleOpen = () => {
-    console.log('I got a call');
     this.setState({ open: true });
   };
 
