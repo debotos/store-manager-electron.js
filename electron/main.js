@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -26,6 +26,13 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   });
+
+  const mainMenu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(mainMenu);
+
+  globalShortcut.register('Ctrl+Shift+I', () => {
+    win.toggleDevTools();
+  });
 }
 
 app.on('ready', createWindow);
@@ -42,3 +49,23 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+const menuTemplate = [
+  {
+    label: 'Options',
+
+    submenu: [
+      { role: 'reload' },
+      { role: 'resetzoom' },
+      { role: 'zoomin' },
+      { role: 'zoomout' },
+      {
+        label: 'Quit',
+        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        click() {
+          app.quit();
+        }
+      }
+    ]
+  }
+];
