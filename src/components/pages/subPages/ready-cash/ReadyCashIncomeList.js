@@ -1,64 +1,63 @@
-import React, { Component } from "react";
-import { List, ListItem } from "material-ui/List";
+import React, { Component } from 'react';
+import { List, ListItem } from 'material-ui/List';
 // import Divider from "material-ui/Divider";
-import numeral from "numeral";
-import SvgIcon from "material-ui/SvgIcon";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
-import moment from "moment";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import { connect } from "react-redux";
-import noInternet from "no-internet";
+import numeral from 'numeral';
+import SvgIcon from 'material-ui/SvgIcon';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import moment from 'moment';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import { connect } from 'react-redux';
 
-import { startRemoveAnEntryToReadyCash } from "../../../../actions/ready-cash/ready-cash-actions";
+import { startRemoveAnEntryToReadyCash } from '../../../../actions/ready-cash/ready-cash-actions';
 
 class ReadyCashIncomeList extends Component {
   handleClose = () => {
     this.setState({ open: false });
     this.setState({ confirmButton: true });
-    this.setState({ password: "" });
+    this.setState({ password: '' });
   };
 
   constructor(props) {
     super(props);
     this.state = {
       confirmButton: true,
-      password: "",
+      password: '',
       open: false,
-      singleItem: ""
+      singleItem: ''
     };
   }
 
   renderAmount = singleItem => {
     return (
       <p>
-        <span style={{ color: "green" }}>
-          <strong>{numeral(singleItem.amount).format("0,0.00")} &#x9f3;</strong>{" "}
+        <span style={{ color: 'green' }}>
+          <strong>{numeral(singleItem.amount).format('0,0.00')} &#x9f3;</strong>{' '}
         </span>
-        &nbsp;From{" "}
+        &nbsp;From{' '}
         <SvgIcon style={{ width: 12, height: 12 }}>
           <path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 1.99-.9 1.99-2L24 5c0-1.1-.9-2-2-2zM8 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H2v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1zm3.85-4h1.64L21 16l-1.99 1.99c-1.31-.98-2.28-2.38-2.73-3.99-.18-.64-.28-1.31-.28-2s.1-1.36.28-2c.45-1.62 1.42-3.01 2.73-3.99L21 8l-1.51 2h-1.64c-.22.63-.35 1.3-.35 2s.13 1.37.35 2z" />
-        </SvgIcon>{" "}
-        <strong>{singleItem.number}</strong> Via{" "}
+        </SvgIcon>{' '}
+        <strong>{singleItem.number}</strong> Via{' '}
         <strong>{singleItem.category.toUpperCase()}</strong>
         <br />
-        Memo Number:{" "}
-        <span style={{ color: "blue" }}>{singleItem.memoNumber}</span> &nbsp;
+        Memo Number:{' '}
+        <span style={{ color: 'blue' }}>{singleItem.memoNumber}</span> &nbsp;
         <span>Name: {singleItem.name} </span>
       </p>
     );
   };
   extractDate = data => {
-    var now = moment(data).format("LTS");
+    var now = moment(data).format('LTS');
     return now;
   };
   renderDetails = singleItem => {
     return (
       <p>
         <strong>
-          E-mail: {singleItem.mail ? singleItem.mail : "Not Provided !"}&nbsp;Time:{" "}
-          <span style={{ color: "orange" }}>
+          E-mail: {singleItem.mail ? singleItem.mail : 'Not Provided !'}&nbsp;Time:{' '}
+          <span style={{ color: 'orange' }}>
             {this.extractDate(singleItem.moment)}
           </span>
           <br />
@@ -69,20 +68,20 @@ class ReadyCashIncomeList extends Component {
   };
   renderIncomeListItem = () => {
     return this.props.income.map((singleItem, index) => {
-      if (singleItem.category === "others-income") {
+      if (singleItem.category === 'others-income') {
         return (
           <ListItem
             key={index}
             primaryText={
               <span>
-                <span style={{ color: "green" }}>
+                <span style={{ color: 'green' }}>
                   <strong>
-                    {numeral(singleItem.amount).format("0,0.00")} &#x9f3;
+                    {numeral(singleItem.amount).format('0,0.00')} &#x9f3;
                   </strong>
                 </span>
-                &nbsp;Via{" "}
-                <strong>{singleItem.category.toUpperCase()}&nbsp;</strong>Time:{" "}
-                <span style={{ color: "orange" }}>
+                &nbsp;Via{' '}
+                <strong>{singleItem.category.toUpperCase()}&nbsp;</strong>Time:{' '}
+                <span style={{ color: 'orange' }}>
                   {this.extractDate(singleItem.moment)}
                 </span>
                 <br />
@@ -95,7 +94,7 @@ class ReadyCashIncomeList extends Component {
             }
             rightIconButton={
               <div
-                style={{ marginRight: 10, marginTop: 10, cursor: "pointer" }}
+                style={{ marginRight: 10, marginTop: 10, cursor: 'pointer' }}
               >
                 <FloatingActionButton
                   mini={true}
@@ -111,22 +110,22 @@ class ReadyCashIncomeList extends Component {
             secondaryTextLines={2}
           />
         );
-      } else if (singleItem.category === "advance") {
+      } else if (singleItem.category === 'advance') {
         return (
           <ListItem
             key={index}
             primaryText={
               <p>
-                <span style={{ color: "green" }}>
+                <span style={{ color: 'green' }}>
                   <strong>
-                    {numeral(singleItem.amount).format("0,0.00")} &#x9f3;
-                  </strong>{" "}
+                    {numeral(singleItem.amount).format('0,0.00')} &#x9f3;
+                  </strong>{' '}
                 </span>
-                &nbsp;From{" "}
+                &nbsp;From{' '}
                 <SvgIcon style={{ width: 12, height: 12 }}>
                   <path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 1.99-.9 1.99-2L24 5c0-1.1-.9-2-2-2zM8 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H2v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1zm3.85-4h1.64L21 16l-1.99 1.99c-1.31-.98-2.28-2.38-2.73-3.99-.18-.64-.28-1.31-.28-2s.1-1.36.28-2c.45-1.62 1.42-3.01 2.73-3.99L21 8l-1.51 2h-1.64c-.22.63-.35 1.3-.35 2s.13 1.37.35 2z" />
-                </SvgIcon>{" "}
-                <strong>{singleItem.title}</strong> Via{" "}
+                </SvgIcon>{' '}
+                <strong>{singleItem.title}</strong> Via{' '}
                 <strong>{singleItem.category.toUpperCase()}</strong>
               </p>
             }
@@ -134,7 +133,7 @@ class ReadyCashIncomeList extends Component {
               <p>
                 <strong>
                   Name: {singleItem.name} &nbsp;
-                  <span style={{ color: "orange" }}>
+                  <span style={{ color: 'orange' }}>
                     {this.extractDate(singleItem.moment)}
                   </span>
                 </strong>
@@ -143,7 +142,7 @@ class ReadyCashIncomeList extends Component {
             secondaryTextLines={2}
             rightIconButton={
               <div
-                style={{ marginRight: 10, marginTop: 10, cursor: "pointer" }}
+                style={{ marginRight: 10, marginTop: 10, cursor: 'pointer' }}
               >
                 <FloatingActionButton
                   mini={true}
@@ -167,7 +166,7 @@ class ReadyCashIncomeList extends Component {
             secondaryTextLines={2}
             rightIconButton={
               <div
-                style={{ marginRight: 10, marginTop: 10, cursor: "pointer" }}
+                style={{ marginRight: 10, marginTop: 10, cursor: 'pointer' }}
               >
                 <FloatingActionButton
                   mini={true}
@@ -186,16 +185,8 @@ class ReadyCashIncomeList extends Component {
     });
   };
   handleOpen = singleItem => {
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.showSnackBar("Failed ! No Internet Connection !");
-      } else {
-        // internet have
-        this.setState({ singleItem });
-        this.setState({ open: true });
-      }
-    });
+    this.setState({ singleItem });
+    this.setState({ open: true });
   };
   handleDelete = () => {
     this.handleListItemDelete(
@@ -205,17 +196,9 @@ class ReadyCashIncomeList extends Component {
   };
   handleListItemDelete = (id, type) => {
     this.handleClose();
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.props.showSnackBar("Failed ! No Internet Connection !");
-      } else {
-        // internet have
-        this.props.startRemoveAnEntryToReadyCash(id, type);
-        this.props.showSnackBar("Successfully Deleted !");
-        this.setState({ password: "" });
-      }
-    });
+    this.props.startRemoveAnEntryToReadyCash(id, type);
+    this.props.showSnackBar('Successfully Deleted !');
+    this.setState({ password: '' });
   };
   handleConfirmPassword = event => {
     let password = event.target.value;

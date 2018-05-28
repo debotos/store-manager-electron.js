@@ -9,7 +9,6 @@ import numeral from 'numeral';
 import Dialog from 'material-ui/Dialog';
 import moment from 'moment';
 import SvgIcon from 'material-ui/SvgIcon';
-// import noInternet from 'no-internet';
 import AutoComplete from 'material-ui/AutoComplete';
 
 import {

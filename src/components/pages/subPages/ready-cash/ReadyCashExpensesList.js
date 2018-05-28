@@ -1,43 +1,42 @@
-import React, { Component } from "react";
-import { List, ListItem } from "material-ui/List";
+import React, { Component } from 'react';
+import { List, ListItem } from 'material-ui/List';
 // import Divider from "material-ui/Divider";
-import numeral from "numeral";
-import moment from "moment";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import SvgIcon from "material-ui/SvgIcon";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
-import { connect } from "react-redux";
-import noInternet from "no-internet";
+import numeral from 'numeral';
+import moment from 'moment';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import SvgIcon from 'material-ui/SvgIcon';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import { connect } from 'react-redux';
 
-import { startRemoveAnEntryToReadyCash } from "../../../../actions/ready-cash/ready-cash-actions";
+import { startRemoveAnEntryToReadyCash } from '../../../../actions/ready-cash/ready-cash-actions';
 
 class ReadyCashExpensesList extends Component {
   handleClose = () => {
     this.setState({ open: false });
     this.setState({ confirmButton: true });
-    this.setState({ password: "" });
+    this.setState({ password: '' });
   };
 
   constructor(props) {
     super(props);
     this.state = {
       confirmButton: true,
-      password: "",
+      password: '',
       open: false,
-      singleItem: ""
+      singleItem: ''
     };
   }
 
   renderAmount = singleItem => {
     return (
       <span>
-        <span style={{ color: "green" }}>
-          <strong>{numeral(singleItem.amount).format("0,0.00")} &#x9f3;</strong>
+        <span style={{ color: 'green' }}>
+          <strong>{numeral(singleItem.amount).format('0,0.00')} &#x9f3;</strong>
         </span>
-        &nbsp;Time:{" "}
-        <span style={{ color: "orange" }}>
+        &nbsp;Time:{' '}
+        <span style={{ color: 'orange' }}>
           {this.extractDate(singleItem.moment)}
         </span>
         <br />
@@ -45,7 +44,7 @@ class ReadyCashExpensesList extends Component {
     );
   };
   extractDate = data => {
-    var now = moment(data).format("LTS");
+    var now = moment(data).format('LTS');
     return now;
   };
   renderIncomeListItem = () => {
@@ -60,7 +59,7 @@ class ReadyCashExpensesList extends Component {
             </span>
           }
           rightIconButton={
-            <div style={{ marginRight: 20, marginTop: 4, cursor: "pointer" }}>
+            <div style={{ marginRight: 20, marginTop: 4, cursor: 'pointer' }}>
               <FloatingActionButton
                 mini={true}
                 secondary={true}
@@ -77,16 +76,8 @@ class ReadyCashExpensesList extends Component {
     });
   };
   handleOpen = singleItem => {
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.showSnackBar("Failed ! No Internet Connection !");
-      } else {
-        // internet have
-        this.setState({ singleItem });
-        this.setState({ open: true });
-      }
-    });
+    this.setState({ singleItem });
+    this.setState({ open: true });
   };
   handleDelete = () => {
     this.handleListItemDelete(
@@ -96,17 +87,9 @@ class ReadyCashExpensesList extends Component {
   };
   handleListItemDelete = (id, type) => {
     this.handleClose();
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.props.showSnackBar("Failed ! No Internet Connection !");
-      } else {
-        // internet have
-        this.props.startRemoveAnEntryToReadyCash(id, type);
-        this.props.showSnackBar("Successfully Deleted !");
-        this.setState({ password: "" });
-      }
-    });
+    this.props.startRemoveAnEntryToReadyCash(id, type);
+    this.props.showSnackBar('Successfully Deleted !');
+    this.setState({ password: '' });
   };
   handleConfirmPassword = event => {
     let password = event.target.value;

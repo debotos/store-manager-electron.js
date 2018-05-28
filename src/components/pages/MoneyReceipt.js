@@ -1,27 +1,26 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Card } from "material-ui/Card";
-import TextField from "material-ui/TextField";
-import SnackBar from "../ui-element/SnackBar";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import numeral from "numeral";
-import noInternet from "no-internet";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Card } from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import SnackBar from '../ui-element/SnackBar';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import numeral from 'numeral';
 
-import AppBarMain from "../ui-element/AppBarMain";
-import "../../style/due/due.css";
-import { setDueTextFilter } from "../../actions/due/due-filter-actions";
-import dueFilter from "./subPages/due/utility-func/due-filter";
+import AppBarMain from '../ui-element/AppBarMain';
+import '../../style/due/due.css';
+import { setDueTextFilter } from '../../actions/due/due-filter-actions';
+import dueFilter from './subPages/due/utility-func/due-filter';
 import {
   startRemovePrevDue,
   startUpdatePrevDue
-} from "../../actions/sells/prevDue-actions";
+} from '../../actions/sells/prevDue-actions';
 // import Navigation from "../Navigation";
 
 const customDialogContentStyle = {
-  width: "90%",
-  maxWidth: "none",
-  minHeight: "50%"
+  width: '90%',
+  maxWidth: 'none',
+  minHeight: '50%'
 };
 
 class MoneyReceipt extends Component {
@@ -35,21 +34,13 @@ class MoneyReceipt extends Component {
     }
   };
   handleOpen = singleItem => {
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.showSnackBar("Failed ! No Internet Connection !");
-      } else {
-        // internet have
-        this.setState({ singleItem });
-        this.setState({ open: true });
-      }
-    });
+    this.setState({ singleItem });
+    this.setState({ open: true });
   };
   handleClose = () => {
     this.setState({ open: false });
     this.setState({ confirmButton: true });
-    this.setState({ password: "" });
+    this.setState({ password: '' });
   };
   // Dialog
   showEditDueModel = () => {
@@ -96,7 +87,7 @@ class MoneyReceipt extends Component {
   handleDelete = () => {
     this.closeEditDueModel();
     this.props.startRemovePrevDue(this.state.dueIdToRemove);
-    this.showSnackBar("Due Deleted Successfully !");
+    this.showSnackBar('Due Deleted Successfully !');
   };
 
   handleUpdate = () => {
@@ -112,52 +103,45 @@ class MoneyReceipt extends Component {
         this.state.newDewFromNow,
         this.state.dueInfo
       );
-      this.showSnackBar("Due Updated Successfully !");
+      this.showSnackBar('Due Updated Successfully !');
     }
   };
   constructor(props) {
     super(props);
     this.state = {
       showEditDueModel: false,
-      dueSearchText: "",
+      dueSearchText: '',
       snackBar: false,
-      snackBarMessage: "",
-      dueDepositAmount: "",
+      snackBarMessage: '',
+      dueDepositAmount: '',
       currentlySelectedDue: 0,
-      dueIdToRemove: "",
-      dueNumberToUpdate: "",
-      newDewFromNow: "",
-      dueInfo: "",
+      dueIdToRemove: '',
+      dueNumberToUpdate: '',
+      newDewFromNow: '',
+      dueInfo: '',
       confirmButton: true,
-      password: "",
+      password: '',
       open: false,
-      singleItem: ""
+      singleItem: ''
     };
   }
   handleOpen = singleDue => {
-    noInternet().then(offline => {
-      if (offline) {
-        // no internet
-        this.showSnackBar("Failed ! No Internet Connection !");
-      } else {
-        // internet have
-        this.setState({ dueInfo: singleDue.info });
-        this.setState({
-          currentlySelectedDue: parseFloat(singleDue.amount).toFixed(2)
-        });
-        this.setState({ dueIdToRemove: singleDue.id });
-        this.setState({
-          dueNumberToUpdate: singleDue.number
-        });
-        this.setState({ open: true });
-      }
+    // internet have
+    this.setState({ dueInfo: singleDue.info });
+    this.setState({
+      currentlySelectedDue: parseFloat(singleDue.amount).toFixed(2)
     });
+    this.setState({ dueIdToRemove: singleDue.id });
+    this.setState({
+      dueNumberToUpdate: singleDue.number
+    });
+    this.setState({ open: true });
   };
 
   closeEditDueModel = () => {
     this.setState({ showEditDueModel: false });
-    this.setState({ dueDepositAmount: "" });
-    this.setState({ newDewFromNow: "" });
+    this.setState({ dueDepositAmount: '' });
+    this.setState({ newDewFromNow: '' });
   };
 
   handleMainEditModel = () => {
@@ -191,11 +175,11 @@ class MoneyReceipt extends Component {
     ];
     return (
       <div className="money-receipt-main-container">
-        <AppBarMain title={"Money Receipt"} />
+        <AppBarMain title={'Money Receipt'} />
         <div className="animated rollIn">
           <Card
             className="container"
-            style={{ marginTop: 10, padding: 7, textAlign: "center" }}
+            style={{ marginTop: 10, padding: 7, textAlign: 'center' }}
           >
             <TextField
               autoFocus
@@ -218,8 +202,8 @@ class MoneyReceipt extends Component {
           {/* code gose here */}
           <div className="list-body">
             {this.props.allDue.length === 0 ? (
-              <div style={{ textAlign: "center" }}>
-                <span style={{ color: "red", marginTop: 10 }}>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ color: 'red', marginTop: 10 }}>
                   <b>No Due List</b>
                 </span>
               </div>
@@ -239,8 +223,8 @@ class MoneyReceipt extends Component {
                         </div>
                         <h3 className="list-item-amount">
                           {numeral(parseFloat(singleDue.amount)).format(
-                            "0,0.00"
-                          )}{" "}
+                            '0,0.00'
+                          )}{' '}
                           &#x9f3;
                         </h3>
                       </div>
@@ -262,20 +246,20 @@ class MoneyReceipt extends Component {
           contentStyle={customDialogContentStyle}
         >
           <div>
-            <h5 style={{ color: "orange" }}>
-              Previous Due:{" "}
+            <h5 style={{ color: 'orange' }}>
+              Previous Due:{' '}
               <strong>
                 {numeral(parseFloat(this.state.currentlySelectedDue)).format(
-                  "0,0.00"
+                  '0,0.00'
                 )}
               </strong>
             </h5>
-            {this.state.newDewFromNow && this.state.newDewFromNow !== "NaN" ? (
-              <h5 style={{ color: "red" }}>
-                From Now:{" "}
+            {this.state.newDewFromNow && this.state.newDewFromNow !== 'NaN' ? (
+              <h5 style={{ color: 'red' }}>
+                From Now:{' '}
                 <strong>
                   {numeral(parseFloat(this.state.newDewFromNow)).format(
-                    "0,0.00"
+                    '0,0.00'
                   )}
                 </strong>
               </h5>

@@ -7,6 +7,7 @@ import AppBarMain from '../ui-element/AppBarMain';
 import startBackup from '../../actions/backup/backup';
 import startRestore from '../../actions/backup/restore';
 
+import db from '../../secrets/neDB';
 import '../../style/backup-restore.css';
 
 class Backup extends Component {

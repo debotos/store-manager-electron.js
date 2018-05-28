@@ -13,7 +13,10 @@ function collectAdvance() {
     });
   }).then(advancesDoc => {
     // console.log('Got Advance Doc => ', advancesDoc);
-    DATABASE['advances'] = advancesDoc;
+    DATABASE['advances'] = advancesDoc.map(singleItem => {
+      delete singleItem._id;
+      return singleItem;
+    });
     return advancesDoc;
   });
 }
@@ -29,7 +32,10 @@ function collectExpense() {
     });
   }).then(expensesDoc => {
     // console.log('Got Expense Doc =>', expensesDoc);
-    DATABASE['expenses'] = expensesDoc;
+    DATABASE['expenses'] = expensesDoc.map(singleItem => {
+      delete singleItem._id;
+      return singleItem;
+    });
     return expensesDoc;
   });
 }
@@ -45,7 +51,10 @@ function collectIncome() {
     });
   }).then(incomesDoc => {
     // console.log('Got Expense Doc =>', incomesDoc);
-    DATABASE['incomes'] = incomesDoc;
+    DATABASE['incomes'] = incomesDoc.map(singleItem => {
+      delete singleItem._id;
+      return singleItem;
+    });
     return incomesDoc;
   });
 }
@@ -62,7 +71,10 @@ function collectReadyCash() {
     });
   }).then(income => {
     // console.log('Got readyCash income => ', income);
-    readyCash['income'] = income;
+    readyCash['income'] = income.map(singleItem => {
+      delete singleItem._id;
+      return singleItem;
+    });
     return new Promise(function(resolve, reject) {
       db.readyCash['expenses'].find({}, function(err, expenses) {
         if (err) {
@@ -73,7 +85,10 @@ function collectReadyCash() {
       });
     }).then(expenses => {
       // console.log('Got readyCash expenses => ', expenses);
-      readyCash['expenses'] = expenses;
+      readyCash['expenses'] = expenses.map(singleItem => {
+        delete singleItem._id;
+        return singleItem;
+      });
       // console.log('Got readyCash Doc => ', readyCash);
       DATABASE['readyCash'] = readyCash;
       return readyCash;
@@ -96,6 +111,7 @@ function collectReadyCashAmount() {
       readyCashAmoumt = { ...readyCashAmountDoc[0] };
     }
     // console.log('Got ReadyCashAmount Doc =>', readyCashAmoumt);
+    delete readyCashAmoumt._id;
     DATABASE['readyCashAmount'] = readyCashAmoumt;
     return readyCashAmoumt;
   });
@@ -114,6 +130,7 @@ function collectMemo() {
   }).then(memoDoc => {
     if (memoDoc.length > 0) {
       memoNoDoc = { ...memoDoc[0] };
+      delete memoNoDoc._id;
     }
     // console.log('Got Memo Doc =>', memoNoDoc);
     DATABASE['memo'] = memoNoDoc;
@@ -132,7 +149,10 @@ function collectDue() {
     });
   }).then(dueDoc => {
     // console.log('Got Due Doc => ', dueDoc);
-    DATABASE['due'] = dueDoc;
+    DATABASE['due'] = dueDoc.map(singleItem => {
+      delete singleItem._id;
+      return singleItem;
+    });
     return dueDoc;
   });
 }
@@ -176,7 +196,10 @@ function collectStockData() {
     });
   }).then(aluminiumDocs => {
     // console.log('Got aluminium Doc in stock => ', aluminiumDocs);
-    stockData.aluminium = aluminiumDocs;
+    stockData.aluminium = aluminiumDocs.map(singleItem => {
+      delete singleItem._id;
+      return singleItem;
+    });
 
     return new Promise(function(resolve, reject) {
       db.stock['glass'].find({}, function(err, glassDocs) {
@@ -188,7 +211,10 @@ function collectStockData() {
       });
     }).then(glassDocs => {
       // console.log('Got glass Doc in stock => ', glassDocs);
-      stockData.glass = glassDocs;
+      stockData.glass = glassDocs.map(singleItem => {
+        delete singleItem._id;
+        return singleItem;
+      });
 
       return new Promise(function(resolve, reject) {
         db.stock['ss'].find({}, function(err, ssDocs) {
@@ -200,7 +226,10 @@ function collectStockData() {
         });
       }).then(ssDocs => {
         // console.log('Got ss Doc in stock => ', ssDocs);
-        stockData.ss = ssDocs;
+        stockData.ss = ssDocs.map(singleItem => {
+          delete singleItem._id;
+          return singleItem;
+        });
 
         return new Promise(function(resolve, reject) {
           db.stock['others'].find({}, function(err, othersDocs) {
@@ -212,7 +241,10 @@ function collectStockData() {
           });
         }).then(othersDocs => {
           // console.log('Got others Doc in stock => ', othersDocs);
-          stockData.others = othersDocs;
+          stockData.others = othersDocs.map(singleItem => {
+            delete singleItem._id;
+            return singleItem;
+          });
           // console.log('Got stock Doc => ', stockData);
           DATABASE['stock'] = stockData;
           return stockData;
@@ -236,6 +268,7 @@ function collectStoreInfo() {
       docs[0] = {};
     }
     // console.log('Got StoreInfo Doc => ', docs[0]);
+    delete docs[0]._id;
     DATABASE['info'] = docs[0];
     return docs[0];
   });
