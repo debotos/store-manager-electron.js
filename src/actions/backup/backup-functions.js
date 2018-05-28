@@ -82,7 +82,7 @@ function collectReadyCash() {
 }
 
 function collectReadyCashAmount() {
-  let readyCashAmoumt = { id: '', amount: 0 };
+  let readyCashAmoumt = {};
   return new Promise(function(resolve, reject) {
     db['readyCashAmount'].find({}, function(err, readyCashAmountDoc) {
       if (err) {
@@ -102,7 +102,7 @@ function collectReadyCashAmount() {
 }
 
 function collectMemo() {
-  let memoNoDoc = { id: '', memoNumber: 1 };
+  let memoNoDoc = {};
   return new Promise(function(resolve, reject) {
     db['memo'].find({}, function(err, memoDoc) {
       if (err) {
@@ -233,14 +233,7 @@ function collectStoreInfo() {
     });
   }).then(docs => {
     if (docs.length === 0) {
-      docs[0] = {
-        name: 'Set Your Store NAME',
-        number1: 70000000000,
-        number2: 90000000000,
-        number3: 80000000000,
-        address: 'Set Your Store ADDRESS',
-        password: 12345
-      };
+      docs[0] = {};
     }
     // console.log('Got StoreInfo Doc => ', docs[0]);
     DATABASE['info'] = docs[0];
