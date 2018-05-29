@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FilePicker } from 'react-file-picker';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
 
 import SnackBar from '../ui-element/SnackBar';
 import AppBarMain from '../ui-element/AppBarMain';
@@ -56,6 +60,7 @@ class Backup extends Component {
   };
 
   handleRestore = () => {
+    this.handleClose();
     this.setState({ isWorking: true });
     setTimeout(() => {
       startRestore(this.state.file.path)
@@ -79,9 +84,38 @@ class Backup extends Component {
     snackBar: false,
     snackBarMessage: '',
     btnStatus: 'Click To Select Database',
-    file: null
+    file: null,
+    confirmButton: true,
+    password: '',
+    open: false
+  };
+  handleConfirmPassword = event => {
+    let password = event.target.value;
+    this.setState({ password });
+    if (String(password) === String(this.props.storeInfo.password)) {
+      this.setState({ confirmButton: false });
+    } else {
+      this.setState({ confirmButton: true });
+    }
+  };
+  handleOpen = () => {
+    this.setState({ open: true });
+  };
+  handleClose = () => {
+    this.setState({ open: false });
+    this.setState({ confirmButton: true });
+    this.setState({ password: '' });
   };
   render() {
+    const actions = [
+      <FlatButton label="Cancel" secondary={true} onClick={this.handleClose} />,
+      <FlatButton
+        label="Confirm Restore"
+        disabled={this.state.confirmButton}
+        primary={true}
+        onClick={this.handleRestore}
+      />
+    ];
     return (
       <div>
         <AppBarMain title={'Backup Database'} />
@@ -124,7 +158,7 @@ class Backup extends Component {
                   style={{ textDecoration: 'none' }}
                   href="javascript:void(0);"
                   className="backup-restore-btn"
-                  onClick={this.handleRestore}
+                  onClick={this.handleOpen}
                 >
                   Restore
                 </a>
@@ -170,9 +204,64 @@ class Backup extends Component {
           handleActionTouchTap={this.handleActionTouchTap}
           handleRequestClose={this.handleRequestClose}
         />
+        <Dialog
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          title={
+            <div>
+              <h3 style={{ margin: 0, padding: 0 }}>Are You Sure? </h3>
+              <br />
+              <p style={{ color: 'orange', margin: 0, padding: 0 }}>
+                Warning: Everything(now have) is going to be{' '}
+                <p
+                  style={{
+                    color: 'red',
+                    margin: 0,
+                    padding: 0,
+                    display: 'inline'
+                  }}
+                >
+                  Deleted!
+                </p>
+              </p>
+              <p>
+                Selected File =>{' '}
+                <p
+                  style={{
+                    color: 'green',
+                    margin: 0,
+                    padding: 0,
+                    display: 'inline'
+                  }}
+                >
+                  {this.state.file && this.state.file.name}
+                </p>
+              </p>
+              <p>
+                Note that, after Restore Process, Software is going to start
+                with the data backed up on => {this.state.btnStatus}
+              </p>
+            </div>
+          }
+          onRequestClose={this.handleClose}
+        >
+          <TextField
+            type="password"
+            floatingLabelText="Comfirm The Password"
+            value={this.state.password}
+            onChange={this.handleConfirmPassword}
+          />
+        </Dialog>
       </div>
     );
   }
 }
 
-export default Backup;
+const mapStateToProps = state => {
+  return {
+    storeInfo: state.storeInfo
+  };
+};
+
+export default connect(mapStateToProps, null)(Backup);

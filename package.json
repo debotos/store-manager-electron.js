@@ -51,12 +51,31 @@
   "homepage": "./",
   "main": "electron/main.js",
   "build": {
-    "productName": "Store Manager App",
+    "productName": "Store Management Software",
     "appId": "com.debotos.das",
     "electronVersion": "1.7.10",
     "files": [
       "build/**/*",
       "electron/*"
-    ]
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "arch": [
+        "x64",
+        "ia32"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "arch": [
+        "x64"
+      ],
+      "category": "Development"
+    }
   }
 }
