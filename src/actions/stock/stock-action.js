@@ -111,7 +111,7 @@ export const startUpdateStockItem = (id, data) => {
   };
 };
 
-// Function to get data from firebase and fill the local store
+// Function to get data from neDB and fill the local store
 // Read
 export const setStock = data => ({
   type: SET_STOCK,

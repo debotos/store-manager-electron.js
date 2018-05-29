@@ -1,16 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { DateRangePicker } from "react-dates";
-import TextField from "material-ui/TextField";
-import MenuItem from "material-ui/MenuItem";
-import SelectField from "material-ui/SelectField";
+import React from 'react';
+import { connect } from 'react-redux';
+import { DateRangePicker } from 'react-dates';
+import TextField from 'material-ui/TextField';
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
 import {
   setTextFilter,
   sortByDate,
   sortByAmount,
   setStartDate,
   setEndDate
-} from "../../../../actions/expenses/expenses-filters-action";
+} from '../../../../actions/expenses/expenses-filters-action';
 
 const styles = {
   customWidth: {
@@ -36,11 +36,11 @@ class ExpenseListFilters extends React.Component {
     this.props.setTextFilter(e.target.value);
   };
   onSortChange = (event, index, value) => {
-    if (value === "date") {
-      console.log("Sorting by Data");
+    if (value === 'date') {
+      console.log('Sorting by Data');
       this.props.sortByDate();
-    } else if (value === "amount") {
-      console.log("Sorting by Amount");
+    } else if (value === 'amount') {
+      console.log('Sorting by Amount');
       this.props.sortByAmount();
     }
   };
@@ -73,6 +73,8 @@ class ExpenseListFilters extends React.Component {
           </div>
           <div className="filter-date-picker">
             <DateRangePicker
+              startDateId="expenseFilterStartDateId"
+              endDateId="expenseFilterEndDateId"
               startDate={this.props.filters.startDate}
               endDate={this.props.filters.endDate}
               onDatesChange={this.onDatesChange}

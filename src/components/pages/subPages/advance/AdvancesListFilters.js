@@ -1,16 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { DateRangePicker } from "react-dates";
-import TextField from "material-ui/TextField";
-import MenuItem from "material-ui/MenuItem";
-import SelectField from "material-ui/SelectField";
+import React from 'react';
+import { connect } from 'react-redux';
+import { DateRangePicker } from 'react-dates';
+import TextField from 'material-ui/TextField';
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
 import {
   setTextFilter,
   sortByDate,
   sortByAmount,
   setStartDate,
   setEndDate
-} from "../../../../actions/advance/advances-filters-action";
+} from '../../../../actions/advance/advances-filters-action';
 
 const styles = {
   customWidth: {
@@ -37,11 +37,11 @@ class AdvanceListFilters extends React.Component {
     this.props.setTextFilter(e.target.value);
   };
   onSortChange = (event, index, value) => {
-    if (value === "date") {
-      console.log("Sorting by Data");
+    if (value === 'date') {
+      console.log('Sorting by Data');
       this.props.sortByDate();
-    } else if (value === "amount") {
-      console.log("Sorting by Amount");
+    } else if (value === 'amount') {
+      console.log('Sorting by Amount');
       this.props.sortByAmount();
     }
   };
@@ -74,6 +74,8 @@ class AdvanceListFilters extends React.Component {
           </div>
           <div className="filter-date-picker">
             <DateRangePicker
+              startDateId="advanceFilterStartDateId"
+              endDateId="advanceFilterEndDateId"
               startDate={this.props.filters.startDate}
               endDate={this.props.filters.endDate}
               onDatesChange={this.onDatesChange}

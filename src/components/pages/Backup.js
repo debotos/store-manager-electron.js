@@ -10,7 +10,7 @@ import startRestore from '../../actions/backup/restore';
 import db from '../../secrets/neDB';
 import '../../style/backup-restore.css';
 
-const remote = window.require('electron').remote;
+const { getCurrentWindow } = window.require('electron').remote;
 
 class Backup extends Component {
   // SnackBar Functions
@@ -63,8 +63,7 @@ class Backup extends Component {
           this.setState({ isWorking: false });
           this.showSnackBar('Restore Successfull! Restarting....');
           setTimeout(() => {
-            remote.app.relaunch();
-            remote.app.exit(0);
+            getCurrentWindow().reload();
           }, 1000);
         })
         .catch(e => {
