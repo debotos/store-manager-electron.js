@@ -4,11 +4,14 @@ const loadJsonFile = window.require('load-json-file');
 
 const startRestore = filePath => {
   // console.log(filePath);
-  loadJsonFile(filePath).then(json => {
+  return loadJsonFile(filePath).then(json => {
     // console.log(json);
-    deleteAllDB().then(count => {
+    return deleteAllDB().then(count => {
       console.log('DB Doc removed (count) => ', count);
-      restoreDB(json);
+      return restoreDB(json).then(docInserted => {
+        console.log('DB Restored with => ', docInserted);
+        return docInserted;
+      });
     });
   });
 };

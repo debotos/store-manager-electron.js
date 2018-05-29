@@ -10,6 +10,8 @@ import startRestore from '../../actions/backup/restore';
 import db from '../../secrets/neDB';
 import '../../style/backup-restore.css';
 
+const remote = window.require('electron').remote;
+
 class Backup extends Component {
   // SnackBar Functions
   handleActionTouchTap = () => {
@@ -54,7 +56,23 @@ class Backup extends Component {
   };
 
   handleRestore = () => {
-    startRestore(this.state.file.path);
+    this.setState({ isWorking: true });
+    setTimeout(() => {
+      startRestore(this.state.file.path)
+        .then(() => {
+          this.setState({ isWorking: false });
+          this.showSnackBar('Restore Successfull! Restarting....');
+          setTimeout(() => {
+            remote.app.relaunch();
+            remote.app.exit(0);
+          }, 1000);
+        })
+        .catch(e => {
+          this.setState({ isWorking: false });
+          this.showSnackBar('Failed to Restore!');
+          console.log('Failed Restore => ', e);
+        });
+    }, 3000);
   };
 
   state = {

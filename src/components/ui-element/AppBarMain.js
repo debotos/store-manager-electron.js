@@ -11,7 +11,7 @@ import MenuItems from './MenuItems';
 import ActionInfoOutline from 'material-ui/svg-icons/action/info-outline';
 import 'font-awesome/css/font-awesome.min.css';
 
-// const { shell } = window.require('electron');
+const { shell } = window.require('electron');
 
 class AppBarMain extends React.Component {
   renderAbout = () => {
@@ -29,7 +29,7 @@ class AppBarMain extends React.Component {
           </h2>
         </div>
         <div className="profile-social">
-          {/* <ul>
+          <ul>
             <li
               onClick={() =>
                 shell.openExternal('https://www.linkedin.com/in/debotos-das')
@@ -110,7 +110,7 @@ class AppBarMain extends React.Component {
                 <i className="fa fa-codepen" />
               </a>
             </li>
-          </ul> */}
+          </ul>
         </div>
       </div>
     );

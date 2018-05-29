@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import SelectField from "material-ui/SelectField";
-import MenuItem from "material-ui/MenuItem";
-import { Card } from "material-ui/Card";
-import { connect } from "react-redux";
-import RaisedButton from "material-ui/RaisedButton";
-import Dialog from "material-ui/Dialog";
-import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
+import React, { Component } from 'react';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import { Card } from 'material-ui/Card';
+import { connect } from 'react-redux';
+import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
 
-import HistoryTableGenerator from "./HistoryTable/HistoryTableGenerator";
-import { startDeleteAllHistoryOfThisNumber } from "../../../../actions/sells/sells-history-actions";
+import HistoryTableGenerator from './HistoryTable/HistoryTableGenerator';
+import { startDeleteAllHistoryOfThisNumber } from '../../../../actions/sells/sells-history-actions';
 
 class SellsHistory extends Component {
   handleSelectChange = (event, index, value) => {
@@ -38,7 +38,7 @@ class SellsHistory extends Component {
   handleFullHistoryDeleteConfirmDialogClose = () => {
     this.setState({ fullHistoryDeleteConfirm: false });
     this.setState({ confirmButton: true });
-    this.setState({ password: "" });
+    this.setState({ password: '' });
   };
   handleConfirmPassword = event => {
     let password = event.target.value;
@@ -54,9 +54,9 @@ class SellsHistory extends Component {
     this.state = {
       selectValue: null,
       confirmButton: true,
-      password: "",
+      password: '',
       fullHistoryDeleteConfirm: false,
-      idOfTheVictiom: "",
+      idOfTheVictiom: '',
       showDeleteButton: false
     };
   }
@@ -95,34 +95,6 @@ class SellsHistory extends Component {
     // Show Confirm
     this.handleFullHistoryDeleteConfirmDialogOpen();
   };
-
-  renderAllHistoryDeleteButton = () => {
-    if (this.state.showDeleteButton) {
-      return (
-        <div
-          className="container"
-          style={{
-            marginTop: 10,
-            marginBottom: 10
-          }}
-        >
-          <Card
-            style={{
-              backgroundColor: "#e5e5e5",
-              padding: 10
-            }}
-          >
-            <RaisedButton
-              secondary={true}
-              label="Delete All History Of This Number"
-              fullWidth={true}
-              onClick={this.showModelAndGetIdOfTheNumber}
-            />
-          </Card>
-        </div>
-      );
-    }
-  };
   render() {
     const fullHistoryDeleteConfirmModelActions = [
       <FlatButton
@@ -140,13 +112,13 @@ class SellsHistory extends Component {
       <div>
         <div
           className="container"
-          style={{ textAlign: "center", marginTop: 5, marginBottom: 5 }}
+          style={{ textAlign: 'center', marginTop: 5, marginBottom: 5 }}
         >
           {Object.keys(this.props.sellsHistory).length > 0 ? (
             <div>
               <Card
                 className="animated bounceIn"
-                style={{ backgroundColor: "#90A4AE" }}
+                style={{ backgroundColor: '#90A4AE' }}
               >
                 <SelectField
                   style={{ marginTop: 5 }}
@@ -159,12 +131,34 @@ class SellsHistory extends Component {
               </Card>
             </div>
           ) : (
-            <div style={{ color: "red", fontWeight: "bold" }}>
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
               No Sells History Found !
             </div>
           )}
         </div>
-        {this.renderAllHistoryDeleteButton()}
+        {this.props.sellsHistory[this.state.selectValue] && (
+          <div
+            className="container"
+            style={{
+              marginTop: 10,
+              marginBottom: 10
+            }}
+          >
+            <Card
+              style={{
+                backgroundColor: '#e5e5e5',
+                padding: 10
+              }}
+            >
+              <RaisedButton
+                secondary={true}
+                label="Delete All History Of This Number"
+                fullWidth={true}
+                onClick={this.showModelAndGetIdOfTheNumber}
+              />
+            </Card>
+          </div>
+        )}
         {/* Showing the tables */}
         <div>{this.renderTableUsingHistory(this.state.selectValue)}</div>
         <div>
