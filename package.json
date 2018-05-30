@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "electron": "^1.7.10",
-    "electron-builder": "^19.52.1",
+    "electron-builder": "^20.15.1",
     "foreman": "2.0.0"
   },
   "scripts": {
@@ -45,7 +45,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "electron": "electron .",
-    "ebuild": "yarn build && node_modules/.bin/build"
+    "ebuild": "yarn build && node_modules/.bin/build -wl",
+    "dist": "node_modules/.bin/build -wl"
   },
   "description": "React and Electron Awesome App",
   "homepage": "./",
@@ -54,26 +55,25 @@
     "productName": "Store Management Software",
     "appId": "com.debotos.das",
     "electronVersion": "1.7.10",
+    "extends": null,
     "files": [
       "build/**/*",
       "electron/*"
     ],
     "win": {
-      "target": [
-        "nsis"
-      ],
-      "arch": [
-        "x64",
-        "ia32"
-      ]
+      "target": [{
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }],
+      "icon": "build/icon.ico"
     },
     "linux": {
       "target": [
         "deb",
         "AppImage"
-      ],
-      "arch": [
-        "x64"
       ],
       "category": "Development"
     }
